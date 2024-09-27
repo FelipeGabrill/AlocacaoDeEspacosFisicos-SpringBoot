@@ -66,6 +66,6 @@ public class RequestService {
         entity.setDateCreationRequest(dto.getDateCreationRequest());
         entity.setNeeds(dto.getNeeds());
         entity.setStatus(dto.getStatus());
-        // Aqui você pode fazer a lógica de associação para physicalSpace e user
+        
     }
 }

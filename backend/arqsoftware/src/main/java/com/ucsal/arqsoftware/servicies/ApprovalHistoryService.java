@@ -64,6 +64,6 @@ public class ApprovalHistoryService {
         entity.setDateTime(dto.getDateTime());
         entity.setDecision(dto.isDecision());
         entity.setObservation(dto.getObservation());
-        // Associações de User e Requests podem ser feitas aqui
+      
     }
 }
