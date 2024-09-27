@@ -2,8 +2,8 @@ package com.ucsal.arqsoftware.dto;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import com.ucsal.arqsoftware.entities.Request;
 import com.ucsal.arqsoftware.entities.User;
 
 import lombok.Getter;
@@ -21,13 +21,15 @@ public class UserDTO {
 	
 	private String password;
 	
-	private List<Request> requests = new ArrayList<>();
+	private List<RequestDTO> requests = new ArrayList<>();
 	
 	public UserDTO(User entity) {
 		id = entity.getId();
 		username = entity.getUsername();
 		login = entity.getLogin();
 		password = entity.getPassword();
-		requests = entity.getRequests();
+		requests = entity.getRequests().stream()
+	            .map(RequestDTO::new) 
+	            .collect(Collectors.toList());
 	}
 }

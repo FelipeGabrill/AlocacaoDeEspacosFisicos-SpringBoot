@@ -6,46 +6,46 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.ucsal.arqsoftware.dto.PhysicalSpaceDTO;
 import com.ucsal.arqsoftware.dto.RequestDTO;
-import com.ucsal.arqsoftware.dto.UserDTO;
+import com.ucsal.arqsoftware.entities.PhysicalSpace;
 import com.ucsal.arqsoftware.entities.Request;
-import com.ucsal.arqsoftware.entities.User;
-import com.ucsal.arqsoftware.repositories.UserRepository;
+import com.ucsal.arqsoftware.repositories.PhysicalSpaceRepository;
 import com.ucsal.arqsoftware.servicies.exceptions.DatabaseException;
 import com.ucsal.arqsoftware.servicies.exceptions.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
-public class UserService {
+public class PhysicalSpaceService {
 
 	@Autowired
-	private UserRepository repository;
+	private PhysicalSpaceRepository repository;
 	
-	public UserDTO findById(Long id) {
-		User user = repository.findById(id).orElseThrow(
+	public PhysicalSpaceDTO findById(Long id) {
+		PhysicalSpace physicalSpace = repository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("Recurso não encontrado"));
-		return new UserDTO(user);
+		return new PhysicalSpaceDTO(physicalSpace);
 	}
 	
-	public Page<UserDTO> findAll(Pageable pageable) {
-		Page<User> result = repository.findAll(pageable);
-		return result.map(x -> new UserDTO(x));
+	public Page<PhysicalSpaceDTO> findAll(Pageable pageable) {
+		Page<PhysicalSpace> result = repository.findAll(pageable);
+		return result.map(x -> new PhysicalSpaceDTO(x));
 	}
 	
-	public UserDTO insert(UserDTO dto) {
-		User entity = new User();
+	public PhysicalSpaceDTO insert(PhysicalSpaceDTO dto) {
+		PhysicalSpace entity = new PhysicalSpace();
 		copyDtoToEntity(dto, entity);
 		entity = repository.save(entity);
-		return new UserDTO(entity);
+		return new PhysicalSpaceDTO(entity);
 	}
 	
-	public UserDTO update(Long id, UserDTO dto) {
+	public PhysicalSpaceDTO update(Long id, PhysicalSpaceDTO dto) {
 		try {
-			User entity = repository.getReferenceById(id);
+			PhysicalSpace entity = repository.getReferenceById(id);
 			copyDtoToEntity(dto, entity);
 			entity = repository.save(entity);
-			return new UserDTO(entity);
+			return new PhysicalSpaceDTO(entity);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException("Recurso não encontrado");
 		}
@@ -63,10 +63,12 @@ public class UserService {
 	   	}
 	}
 
-	private void copyDtoToEntity(UserDTO dto, User entity) {
-		entity.setUsername(dto.getUsername());
-		entity.setLogin(dto.getLogin());
-		entity.setPassword(dto.getPassword());
+	private void copyDtoToEntity(PhysicalSpaceDTO dto, PhysicalSpace entity) {
+		entity.setName(dto.getName());
+		entity.setLocation(dto.getLocation());
+		entity.setCapacity(dto.getCapacity());
+		entity.setType(dto.getType());
+		entity.setResources(dto.getResources());
 		entity.getRequests().clear();
 		for (RequestDTO reqDto : dto.getRequests()) {
 			Request req = new Request();
