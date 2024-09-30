@@ -25,6 +25,7 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
+	@Setter
 	private Long id;
 	
 	@Setter
@@ -40,6 +41,9 @@ public class User {
 	//@ManyToMany
 	//@JoinTable(name = "tb_usuario_role", joinColumns = @JoinColumn(name = "usuario_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	//private Set<Role> roles = new HashSet<>();
+	
+	@OneToMany(mappedBy = "user")
+	private List<ApprovalHistory> approvalHistories = new ArrayList<>();
 	
 	@OneToMany(mappedBy = "user")
 	private List<Request> requests = new ArrayList<>();

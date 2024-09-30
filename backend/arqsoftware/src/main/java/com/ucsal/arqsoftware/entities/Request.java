@@ -9,7 +9,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
@@ -48,17 +47,17 @@ public class Request {
 	
 	@ManyToOne
 	@JoinColumn(name = "space_id")
+	@Setter
 	private PhysicalSpace physicalSpace;
 	
 	@ManyToOne
 	@JoinColumn(name = "user_id")
+	@Setter
 	private User user;
 	
-	@ManyToMany
-	@JoinTable(name = "tb_approval_histories", 
-	           joinColumns = @JoinColumn(name = "request_id"),
-	           inverseJoinColumns = @JoinColumn(name = "history_id"))
-	private Set<ApprovalHistory> approvalHistory = new HashSet<>();
+	@ManyToMany(mappedBy = "requests")
+	@Setter
+	private Set<ApprovalHistory> approvalHistories = new HashSet<>();
 	
 	public Request() {
 	}

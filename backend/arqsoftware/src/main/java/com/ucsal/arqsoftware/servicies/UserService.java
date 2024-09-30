@@ -6,8 +6,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.ucsal.arqsoftware.dto.ApprovalHistoryDTO;
 import com.ucsal.arqsoftware.dto.RequestDTO;
 import com.ucsal.arqsoftware.dto.UserDTO;
+import com.ucsal.arqsoftware.entities.ApprovalHistory;
 import com.ucsal.arqsoftware.entities.Request;
 import com.ucsal.arqsoftware.entities.User;
 import com.ucsal.arqsoftware.repositories.UserRepository;
@@ -72,6 +74,11 @@ public class UserService {
 			Request req = new Request();
 			req.setId(reqDto.getId());
 			entity.getRequests().add(req);
+		}
+		for (ApprovalHistoryDTO aprDto : dto.getApprovalHistories()) {
+			ApprovalHistory apr = new ApprovalHistory();
+			apr.setId(aprDto.getId());
+			entity.getApprovalHistories().add(apr);
 		}
 	}
 }

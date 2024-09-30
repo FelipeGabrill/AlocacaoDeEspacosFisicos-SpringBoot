@@ -6,9 +6,15 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.ucsal.arqsoftware.dto.ApprovalHistoryDTO;
 import com.ucsal.arqsoftware.dto.RequestDTO;
+import com.ucsal.arqsoftware.entities.ApprovalHistory;
+import com.ucsal.arqsoftware.entities.PhysicalSpace;
 import com.ucsal.arqsoftware.entities.Request;
+import com.ucsal.arqsoftware.entities.User;
+import com.ucsal.arqsoftware.repositories.PhysicalSpaceRepository;
 import com.ucsal.arqsoftware.repositories.RequestRepository;
+import com.ucsal.arqsoftware.repositories.UserRepository;
 import com.ucsal.arqsoftware.servicies.exceptions.DatabaseException;
 import com.ucsal.arqsoftware.servicies.exceptions.ResourceNotFoundException;
 
@@ -20,6 +26,12 @@ public class RequestService {
     @Autowired
     private RequestRepository repository;
 
+    @Autowired
+    private UserRepository userRepository;
+    
+    @Autowired
+    private PhysicalSpaceRepository physicalSpaceRepository;
+    
     public RequestDTO findById(Long id) {
         Request request = repository.findById(id).orElseThrow(
             () -> new ResourceNotFoundException("Requisição não encontrada"));
@@ -61,11 +73,21 @@ public class RequestService {
     }
 
     private void copyDtoToEntity(RequestDTO dto, Request entity) {
+    	User user = userRepository.getReferenceById(dto.getUserId());
+    	PhysicalSpace physicalSpace = physicalSpaceRepository.getReferenceById(dto.getPhysicalSpaceId());
+    	
         entity.setDateTimeStart(dto.getDateTimeStart());
         entity.setDateTimeEnd(dto.getDateTimeEnd());
         entity.setDateCreationRequest(dto.getDateCreationRequest());
         entity.setNeeds(dto.getNeeds());
-        entity.setStatus(dto.getStatus());
-        // Aqui você pode fazer a lógica de associação para physicalSpace e user
+        entity.setStatus(dto.getStatus());   
+        entity.setUser(user);
+        entity.setPhysicalSpace(physicalSpace);
+        entity.getApprovalHistories().clear();
+        for (ApprovalHistoryDTO aprDto : dto.getApprovalHistories()) {
+        	ApprovalHistory apr = new ApprovalHistory();
+        	apr.setId(aprDto.getId());
+        	entity.getApprovalHistories().add(apr);
+        }
     }
 }

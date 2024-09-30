@@ -21,7 +21,7 @@ import jakarta.validation.Valid;
 import java.net.URI;
 
 @RestController
-@RequestMapping(value = "/approval-histories")
+@RequestMapping(value = "/approvalhistories")
 public class ApprovalHistoryController {
 
     @Autowired

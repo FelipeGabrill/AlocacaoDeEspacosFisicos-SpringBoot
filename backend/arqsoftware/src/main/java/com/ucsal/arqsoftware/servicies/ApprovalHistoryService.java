@@ -7,8 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.ucsal.arqsoftware.dto.ApprovalHistoryDTO;
+import com.ucsal.arqsoftware.dto.RequestDTO;
 import com.ucsal.arqsoftware.entities.ApprovalHistory;
+import com.ucsal.arqsoftware.entities.Request;
+import com.ucsal.arqsoftware.entities.User;
 import com.ucsal.arqsoftware.repositories.ApprovalHistoryRepository;
+import com.ucsal.arqsoftware.repositories.UserRepository;
 import com.ucsal.arqsoftware.servicies.exceptions.DatabaseException;
 import com.ucsal.arqsoftware.servicies.exceptions.ResourceNotFoundException;
 
@@ -19,6 +23,9 @@ public class ApprovalHistoryService {
 
     @Autowired
     private ApprovalHistoryRepository repository;
+    
+    @Autowired
+    private UserRepository userRepository;
 
     public ApprovalHistoryDTO findById(Long id) {
         ApprovalHistory approvalHistory = repository.findById(id).orElseThrow(
@@ -61,9 +68,18 @@ public class ApprovalHistoryService {
     }
 
     private void copyDtoToEntity(ApprovalHistoryDTO dto, ApprovalHistory entity) {
+    	
+    	User user = userRepository.getReferenceById(dto.getUserId());
+    	
         entity.setDateTime(dto.getDateTime());
         entity.setDecision(dto.isDecision());
         entity.setObservation(dto.getObservation());
-        // Associações de User e Requests podem ser feitas aqui
+        entity.setUser(user);
+        entity.getRequests().clear();
+		for (RequestDTO reqDto : dto.getRequests()) {
+			Request req = new Request();
+			req.setId(reqDto.getId());
+			entity.getRequests().add(req);
+		}
     }
 }

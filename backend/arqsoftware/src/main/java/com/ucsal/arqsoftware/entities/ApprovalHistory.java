@@ -28,6 +28,7 @@ public class ApprovalHistory {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@EqualsAndHashCode.Include
+	@Setter
 	private Long id;
 	
 	@Setter
@@ -41,6 +42,7 @@ public class ApprovalHistory {
 	
 	@ManyToOne
 	@JoinColumn(name = "user_id")
+	@Setter
 	private User user;
 	
 	@ManyToMany
@@ -51,4 +53,5 @@ public class ApprovalHistory {
 	
 	public ApprovalHistory() {
 	}
+
 }

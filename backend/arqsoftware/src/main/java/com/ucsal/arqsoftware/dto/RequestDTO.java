@@ -1,8 +1,8 @@
 package com.ucsal.arqsoftware.dto;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 import com.ucsal.arqsoftware.entities.ApprovalHistory;
 import com.ucsal.arqsoftware.entities.Request;
@@ -27,11 +27,11 @@ public class RequestDTO {
 	
 	private RequestStatus status;
 	
-	private PhysicalSpaceDTO physicalSpace;
+	private Long physicalSpaceId;
 	
-	private UserDTO user;
+	private Long userId;
 	
-	private Set<ApprovalHistory> approvalHistory = new HashSet<>();
+	private List<ApprovalHistoryDTO> approvalHistories = new ArrayList<>();
 
 	public RequestDTO(Request entity) {
 		id = entity.getId();
@@ -40,9 +40,11 @@ public class RequestDTO {
 		dateCreationRequest = entity.getDateCreationRequest();
 		needs = entity.getNeeds();
 		status = entity.getStatus();
-		physicalSpace = new PhysicalSpaceDTO(entity.getPhysicalSpace());
-		user = new UserDTO(entity.getUser());
-		approvalHistory = entity.getApprovalHistory();
+		physicalSpaceId = entity.getPhysicalSpace().getId();
+		userId = entity.getUser().getId();
+		for (ApprovalHistory apr : entity.getApprovalHistories()) {
+			approvalHistories.add(new ApprovalHistoryDTO(apr));
+		}
 	}
 	
 	
