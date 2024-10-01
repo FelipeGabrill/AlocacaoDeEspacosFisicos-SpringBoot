@@ -1,9 +1,14 @@
 package com.ucsal.arqsoftware.servicies;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import com.ucsal.arqsoftware.dto.ApprovalHistoryDTO;
@@ -11,7 +16,9 @@ import com.ucsal.arqsoftware.dto.RequestDTO;
 import com.ucsal.arqsoftware.dto.UserDTO;
 import com.ucsal.arqsoftware.entities.ApprovalHistory;
 import com.ucsal.arqsoftware.entities.Request;
+import com.ucsal.arqsoftware.entities.Role;
 import com.ucsal.arqsoftware.entities.User;
+import com.ucsal.arqsoftware.projections.UserDetailsProjection;
 import com.ucsal.arqsoftware.repositories.UserRepository;
 import com.ucsal.arqsoftware.servicies.exceptions.DatabaseException;
 import com.ucsal.arqsoftware.servicies.exceptions.ResourceNotFoundException;
@@ -19,7 +26,7 @@ import com.ucsal.arqsoftware.servicies.exceptions.ResourceNotFoundException;
 import jakarta.persistence.EntityNotFoundException;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
 	@Autowired
 	private UserRepository repository;
@@ -80,5 +87,22 @@ public class UserService {
 			apr.setId(aprDto.getId());
 			entity.getApprovalHistories().add(apr);
 		}
+	}
+
+	@Override
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		List<UserDetailsProjection> result = repository.searchUserAndRolesByLogin(username);
+		if (result.size() == 0) {
+			throw new UsernameNotFoundException("User not found");
+		}
+		
+		User user = new User();
+		user.setLogin(username);
+		user.setPassword(result.get(0).getPassword());
+		for (UserDetailsProjection projection : result) {
+			user.addRole(new Role(projection.getRoleId(), projection.getAuthority()));
+		}
+		
+		return user;
 	}
 }
