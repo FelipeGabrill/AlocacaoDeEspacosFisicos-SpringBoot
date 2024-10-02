@@ -5,6 +5,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ucsal.arqsoftware.dto.PhysicalSpaceDTO;
 import com.ucsal.arqsoftware.dto.RequestDTO;
@@ -22,17 +24,20 @@ public class PhysicalSpaceService {
 	@Autowired
 	private PhysicalSpaceRepository repository;
 	
+	@Transactional(readOnly = true)
 	public PhysicalSpaceDTO findById(Long id) {
 		PhysicalSpace physicalSpace = repository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("Recurso não encontrado"));
 		return new PhysicalSpaceDTO(physicalSpace);
 	}
 	
+	@Transactional(readOnly = true)
 	public Page<PhysicalSpaceDTO> findAll(Pageable pageable) {
 		Page<PhysicalSpace> result = repository.findAll(pageable);
 		return result.map(x -> new PhysicalSpaceDTO(x));
 	}
 	
+	@Transactional
 	public PhysicalSpaceDTO insert(PhysicalSpaceDTO dto) {
 		PhysicalSpace entity = new PhysicalSpace();
 		copyDtoToEntity(dto, entity);
@@ -40,6 +45,7 @@ public class PhysicalSpaceService {
 		return new PhysicalSpaceDTO(entity);
 	}
 	
+	@Transactional
 	public PhysicalSpaceDTO update(Long id, PhysicalSpaceDTO dto) {
 		try {
 			PhysicalSpace entity = repository.getReferenceById(id);
@@ -51,6 +57,7 @@ public class PhysicalSpaceService {
 		}
 	}
 
+    @Transactional(propagation = Propagation.SUPPORTS)
 	public void delete(Long id) {
 		if (!repository.existsById(id)) {
 			throw new ResourceNotFoundException("Recurso não encontrado");
