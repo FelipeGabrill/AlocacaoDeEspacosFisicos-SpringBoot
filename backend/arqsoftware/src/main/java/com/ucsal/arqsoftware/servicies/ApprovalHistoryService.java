@@ -5,6 +5,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ucsal.arqsoftware.dto.ApprovalHistoryDTO;
 import com.ucsal.arqsoftware.dto.RequestDTO;
@@ -27,17 +29,20 @@ public class ApprovalHistoryService {
     @Autowired
     private UserRepository userRepository;
 
+    @Transactional(readOnly = true)
     public ApprovalHistoryDTO findById(Long id) {
         ApprovalHistory approvalHistory = repository.findById(id).orElseThrow(
             () -> new ResourceNotFoundException("Histórico de aprovação não encontrado"));
         return new ApprovalHistoryDTO(approvalHistory);
     }
 
+    @Transactional(readOnly = true)
     public Page<ApprovalHistoryDTO> findAll(Pageable pageable) {
         Page<ApprovalHistory> result = repository.findAll(pageable);
         return result.map(ApprovalHistoryDTO::new);
     }
 
+    @Transactional
     public ApprovalHistoryDTO insert(ApprovalHistoryDTO dto) {
         ApprovalHistory entity = new ApprovalHistory();
         copyDtoToEntity(dto, entity);
@@ -45,6 +50,7 @@ public class ApprovalHistoryService {
         return new ApprovalHistoryDTO(entity);
     }
 
+    @Transactional
     public ApprovalHistoryDTO update(Long id, ApprovalHistoryDTO dto) {
         try {
             ApprovalHistory entity = repository.getReferenceById(id);
@@ -56,6 +62,7 @@ public class ApprovalHistoryService {
         }
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException("Histórico de aprovação não encontrado");

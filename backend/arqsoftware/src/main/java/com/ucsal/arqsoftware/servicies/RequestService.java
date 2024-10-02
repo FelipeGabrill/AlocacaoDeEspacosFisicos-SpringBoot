@@ -5,6 +5,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.ucsal.arqsoftware.dto.ApprovalHistoryDTO;
 import com.ucsal.arqsoftware.dto.RequestDTO;
@@ -32,17 +34,20 @@ public class RequestService {
     @Autowired
     private PhysicalSpaceRepository physicalSpaceRepository;
     
+    @Transactional(readOnly = true)
     public RequestDTO findById(Long id) {
         Request request = repository.findById(id).orElseThrow(
             () -> new ResourceNotFoundException("Requisição não encontrada"));
         return new RequestDTO(request);
     }
 
+    @Transactional(readOnly = true)
     public Page<RequestDTO> findAll(Pageable pageable) {
         Page<Request> result = repository.findAll(pageable);
         return result.map(RequestDTO::new);
     }
 
+    @Transactional
     public RequestDTO insert(RequestDTO dto) {
         Request entity = new Request();
         copyDtoToEntity(dto, entity);
@@ -50,6 +55,7 @@ public class RequestService {
         return new RequestDTO(entity);
     }
 
+    @Transactional
     public RequestDTO update(Long id, RequestDTO dto) {
         try {
             Request entity = repository.getReferenceById(id);
@@ -61,6 +67,7 @@ public class RequestService {
         }
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     public void delete(Long id) {
         if (!repository.existsById(id)) {
             throw new ResourceNotFoundException("Requisição não encontrada");
