@@ -8,9 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ucsal.arqsoftware.dto.ApprovalHistoryDTO;
 import com.ucsal.arqsoftware.dto.RequestDTO;
-import com.ucsal.arqsoftware.entities.ApprovalHistory;
 import com.ucsal.arqsoftware.entities.PhysicalSpace;
 import com.ucsal.arqsoftware.entities.Request;
 import com.ucsal.arqsoftware.entities.User;
@@ -89,12 +87,6 @@ public class RequestService {
         entity.setNeeds(dto.getNeeds());
         entity.setStatus(dto.getStatus());   
         entity.setUser(user);
-        entity.setPhysicalSpace(physicalSpace);
-        entity.getApprovalHistories().clear();
-        for (ApprovalHistoryDTO aprDto : dto.getApprovalHistories()) {
-        	ApprovalHistory apr = new ApprovalHistory();
-        	apr.setId(aprDto.getId());
-        	entity.getApprovalHistories().add(apr);
-        }
+        entity.setPhysicalSpace(physicalSpace);        
     }
 }

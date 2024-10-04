@@ -1,10 +1,7 @@
 package com.ucsal.arqsoftware.dto;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import com.ucsal.arqsoftware.entities.ApprovalHistory;
 import com.ucsal.arqsoftware.entities.Request;
 import com.ucsal.arqsoftware.entities.RequestStatus;
 
@@ -42,7 +39,7 @@ public class RequestDTO {
 	@Positive(message = "ID do usuário deve ser positivo")
 	private Long userId;
 	
-	private List<ApprovalHistoryDTO> approvalHistories = new ArrayList<>();
+	private ApprovalHistoryDTO approvalHistory;
 
 	public RequestDTO(Request entity) {
 		id = entity.getId();
@@ -53,9 +50,7 @@ public class RequestDTO {
 		status = entity.getStatus();
 		physicalSpaceId = entity.getPhysicalSpace().getId();
 		userId = entity.getUser().getId();
-		for (ApprovalHistory apr : entity.getApprovalHistories()) {
-			approvalHistories.add(new ApprovalHistoryDTO(apr));
-		}
+		approvalHistory = (entity.getApprovalHistory() == null) ? null : new ApprovalHistoryDTO(entity.getApprovalHistory());
 	}
 	
 	

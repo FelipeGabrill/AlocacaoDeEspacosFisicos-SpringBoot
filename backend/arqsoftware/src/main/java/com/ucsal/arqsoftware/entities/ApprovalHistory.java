@@ -1,17 +1,15 @@
 package com.ucsal.arqsoftware.entities;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -45,11 +43,10 @@ public class ApprovalHistory {
 	@Setter
 	private User user;
 	
-	@ManyToMany
-	@JoinTable(name = "tb_history_request",
-				joinColumns = @JoinColumn(name = "history_id"),
-				inverseJoinColumns = @JoinColumn(name = "request_id"))
-	private Set<Request> requests = new HashSet<>();
+	@Setter
+	@OneToOne
+	@MapsId
+	private Request request;
 	
 	public ApprovalHistory() {
 	}
