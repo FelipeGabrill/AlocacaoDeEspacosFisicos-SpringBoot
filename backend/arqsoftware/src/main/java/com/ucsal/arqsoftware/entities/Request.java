@@ -1,16 +1,15 @@
 package com.ucsal.arqsoftware.entities;
 
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -55,9 +54,10 @@ public class Request {
 	@Setter
 	private User user;
 	
-	@ManyToMany(mappedBy = "requests")
+	
 	@Setter
-	private Set<ApprovalHistory> approvalHistories = new HashSet<>();
+	@OneToOne(mappedBy = "request", cascade = CascadeType.ALL)
+	private ApprovalHistory approvalHistory;
 	
 	public Request() {
 	}

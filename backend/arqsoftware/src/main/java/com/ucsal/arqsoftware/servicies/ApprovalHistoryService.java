@@ -9,11 +9,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ucsal.arqsoftware.dto.ApprovalHistoryDTO;
-import com.ucsal.arqsoftware.dto.RequestDTO;
 import com.ucsal.arqsoftware.entities.ApprovalHistory;
 import com.ucsal.arqsoftware.entities.Request;
 import com.ucsal.arqsoftware.entities.User;
 import com.ucsal.arqsoftware.repositories.ApprovalHistoryRepository;
+import com.ucsal.arqsoftware.repositories.RequestRepository;
 import com.ucsal.arqsoftware.repositories.UserRepository;
 import com.ucsal.arqsoftware.servicies.exceptions.DatabaseException;
 import com.ucsal.arqsoftware.servicies.exceptions.ResourceNotFoundException;
@@ -28,6 +28,9 @@ public class ApprovalHistoryService {
     
     @Autowired
     private UserRepository userRepository;
+    
+    @Autowired
+    private RequestRepository requestRepository;
 
     @Transactional(readOnly = true)
     public ApprovalHistoryDTO findById(Long id) {
@@ -44,7 +47,7 @@ public class ApprovalHistoryService {
 
     @Transactional
     public ApprovalHistoryDTO insert(ApprovalHistoryDTO dto) {
-        ApprovalHistory entity = new ApprovalHistory();
+    	ApprovalHistory entity = new ApprovalHistory();
         copyDtoToEntity(dto, entity);
         entity = repository.save(entity);
         return new ApprovalHistoryDTO(entity);
@@ -77,16 +80,13 @@ public class ApprovalHistoryService {
     private void copyDtoToEntity(ApprovalHistoryDTO dto, ApprovalHistory entity) {
     	
     	User user = userRepository.getReferenceById(dto.getUserId());
+    	Request request = requestRepository.getReferenceById(dto.getRequestId());
     	
         entity.setDateTime(dto.getDateTime());
         entity.setDecision(dto.isDecision());
         entity.setObservation(dto.getObservation());
         entity.setUser(user);
-        entity.getRequests().clear();
-		for (RequestDTO reqDto : dto.getRequests()) {
-			Request req = new Request();
-			req.setId(reqDto.getId());
-			entity.getRequests().add(req);
-		}
+        entity.setRequest(request);
+       
     }
 }
