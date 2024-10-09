@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.ucsal.arqsoftware.dto.PhysicalSpaceDTO;
+import com.ucsal.arqsoftware.entities.PhysicalSpaceType;
 import com.ucsal.arqsoftware.servicies.PhysicalSpaceService;
 
 import jakarta.validation.Valid;
@@ -65,4 +66,28 @@ public class PhysicalSpaceController {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_MANAGER')")
+	@GetMapping("/type/{type}")
+    public ResponseEntity<Page<PhysicalSpaceDTO>> getByType(
+            @PathVariable PhysicalSpaceType type, Pageable pageable) {
+        Page<PhysicalSpaceDTO> dto = service.getByType(type, pageable);
+        return ResponseEntity.ok(dto);
+    }
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_MANAGER')")
+    @GetMapping("/capacity/{capacity}")
+    public ResponseEntity<Page<PhysicalSpaceDTO>> getByCapacity(
+            @PathVariable Integer capacity, Pageable pageable) {
+        Page<PhysicalSpaceDTO> dto = service.getByCapacity(capacity, pageable);
+        return ResponseEntity.ok(dto);
+    }
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_MANAGER')")
+    @GetMapping("/name/{name}")
+    public ResponseEntity<Page<PhysicalSpaceDTO>> getByName(
+            @PathVariable String name, Pageable pageable) {
+        Page<PhysicalSpaceDTO> spaces = service.getByName(name, pageable);
+        return ResponseEntity.ok(spaces);
+    }
 }

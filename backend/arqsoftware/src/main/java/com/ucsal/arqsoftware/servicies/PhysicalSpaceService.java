@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ucsal.arqsoftware.dto.PhysicalSpaceDTO;
 import com.ucsal.arqsoftware.dto.RequestDTO;
 import com.ucsal.arqsoftware.entities.PhysicalSpace;
+import com.ucsal.arqsoftware.entities.PhysicalSpaceType;
 import com.ucsal.arqsoftware.entities.Request;
 import com.ucsal.arqsoftware.repositories.PhysicalSpaceRepository;
 import com.ucsal.arqsoftware.servicies.exceptions.DatabaseException;
@@ -83,4 +84,22 @@ public class PhysicalSpaceService {
 			entity.getRequests().add(req);
 		}
 	}
+
+	@Transactional(readOnly = true)
+	public Page<PhysicalSpaceDTO> getByType(PhysicalSpaceType type, Pageable pageable) {
+		Page<PhysicalSpace> result = repository.findAllByType(type, pageable);
+	    return result.map(PhysicalSpaceDTO::new);
+	}
+	
+	@Transactional(readOnly = true)
+	public Page<PhysicalSpaceDTO> getByCapacity(Integer capacity, Pageable pageable) {
+	    Page<PhysicalSpace> result = repository.findAllByCapacity(capacity, pageable);
+	    return result.map(PhysicalSpaceDTO::new);
+	}
+	
+	@Transactional(readOnly = true)
+	public Page<PhysicalSpaceDTO> getByName(String name, Pageable pageable) {
+        Page<PhysicalSpace> result = repository.findAllByNameContainingIgnoreCase(name, pageable);
+        return result.map(PhysicalSpaceDTO::new);
+    }
 }

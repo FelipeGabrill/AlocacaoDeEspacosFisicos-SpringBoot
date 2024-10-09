@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ucsal.arqsoftware.dto.RequestDTO;
 import com.ucsal.arqsoftware.entities.PhysicalSpace;
 import com.ucsal.arqsoftware.entities.Request;
+import com.ucsal.arqsoftware.entities.RequestStatus;
 import com.ucsal.arqsoftware.entities.User;
 import com.ucsal.arqsoftware.repositories.PhysicalSpaceRepository;
 import com.ucsal.arqsoftware.repositories.RequestRepository;
@@ -88,5 +89,29 @@ public class RequestService {
         entity.setStatus(dto.getStatus());   
         entity.setUser(user);
         entity.setPhysicalSpace(physicalSpace);        
+    }
+
+    @Transactional(readOnly = true)
+	public Page<RequestDTO> getByDataAsc(Pageable pageable) {
+		Page<Request> result = repository.findAllByOrderByDateCreationRequestAsc(pageable);
+		return result.map(RequestDTO::new);
+	}
+
+	@Transactional(readOnly = true)
+	public Page<RequestDTO> getByDataDesc(Pageable pageable) {
+		Page<Request> result = repository.findAllByOrderByDateCreationRequestDesc(pageable);
+		return result.map(RequestDTO::new);	
+	}
+	
+	@Transactional(readOnly = true)
+	public Page<RequestDTO> getByStatus(RequestStatus status, Pageable pageable) {
+		 Page<Request> result = repository.findAllByStatus(status, pageable);
+	     return result.map(RequestDTO::new);
+	}
+
+	@Transactional(readOnly = true)
+	public Page<RequestDTO> getByUserId(Long userId, Pageable pageable) {
+        Page<Request> result = repository.findAllByUserId(userId, pageable);
+        return result.map(RequestDTO::new);
     }
 }
