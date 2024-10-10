@@ -157,7 +157,7 @@ public class UserService implements UserDetailsService {
 
 	@Transactional(readOnly = true)
 	public Page<UserDTO> getByLogin(String login, Pageable pageable) {
-        Page<User> result = repository.findByLoginIgnoreCase(login, pageable);
+        Page<User> result = repository.findByLoginIgnoreCaseContaining(login, pageable);
         return result.map(UserDTO::new); 
     }
 }
