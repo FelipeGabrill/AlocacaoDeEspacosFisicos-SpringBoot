@@ -19,4 +19,6 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 	
     Page<Request> findAllByUserId(Long userId, Pageable pageable);
 
+    Page<Request> findByTitleIgnoreCaseContaining(String title, Pageable pageable);
+
 }

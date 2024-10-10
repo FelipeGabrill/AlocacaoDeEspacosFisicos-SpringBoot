@@ -90,4 +90,12 @@ public class PhysicalSpaceController {
         Page<PhysicalSpaceDTO> spaces = service.getByName(name, pageable);
         return ResponseEntity.ok(spaces);
     }
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_MANAGER')")
+    @GetMapping("/availability/{availability}")
+    public ResponseEntity<Page<PhysicalSpaceDTO>> getByAvailability(
+            @PathVariable Boolean availability, Pageable pageable) {
+        Page<PhysicalSpaceDTO> spaces = service.getByAvailability(availability, pageable);
+        return ResponseEntity.ok(spaces);
+    }
 }

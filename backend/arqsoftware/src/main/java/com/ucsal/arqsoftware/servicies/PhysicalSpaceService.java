@@ -42,6 +42,7 @@ public class PhysicalSpaceService {
 	public PhysicalSpaceDTO insert(PhysicalSpaceDTO dto) {
 		PhysicalSpace entity = new PhysicalSpace();
 		copyDtoToEntity(dto, entity);
+		entity.setAvailability(true);
 		entity = repository.save(entity);
 		return new PhysicalSpaceDTO(entity);
 	}
@@ -77,6 +78,7 @@ public class PhysicalSpaceService {
 		entity.setCapacity(dto.getCapacity());
 		entity.setType(dto.getType());
 		entity.setResources(dto.getResources());
+		entity.setAvailability(dto.getAvailability());
 		entity.getRequests().clear();
 		for (RequestDTO reqDto : dto.getRequests()) {
 			Request req = new Request();
@@ -101,5 +103,11 @@ public class PhysicalSpaceService {
 	public Page<PhysicalSpaceDTO> getByName(String name, Pageable pageable) {
         Page<PhysicalSpace> result = repository.findAllByNameContainingIgnoreCase(name, pageable);
         return result.map(PhysicalSpaceDTO::new);
+    }
+	
+	@Transactional(readOnly = true)
+	public Page<PhysicalSpaceDTO> getByAvailability(Boolean availability, Pageable pageable) {
+	    Page<PhysicalSpace> result = repository.findAllByAvailability(availability, pageable);
+	    return result.map(PhysicalSpaceDTO::new);
     }
 }

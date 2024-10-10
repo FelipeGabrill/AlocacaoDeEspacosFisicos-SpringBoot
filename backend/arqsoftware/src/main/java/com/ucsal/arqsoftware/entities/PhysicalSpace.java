@@ -39,6 +39,9 @@ public class PhysicalSpace {
 	private Integer capacity;
 	
 	@Setter
+	private Boolean availability;
+	
+	@Setter
 	private String resources;
 	
 	@OneToMany(mappedBy = "physicalSpace")

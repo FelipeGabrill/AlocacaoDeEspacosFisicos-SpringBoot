@@ -17,4 +17,6 @@ public interface PhysicalSpaceRepository extends JpaRepository<PhysicalSpace, Lo
     
     Page<PhysicalSpace> findAllByNameContainingIgnoreCase(String name, Pageable pageable);
 
+    Page<PhysicalSpace> findAllByAvailability(Boolean availability, Pageable pageable);
+
 }

@@ -90,11 +90,18 @@ public class RequestController {
     }
     
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_MANAGER')")
-    @GetMapping("/user/{userId}")
-    public ResponseEntity<Page<RequestDTO>> getByUserId(
-            @PathVariable Long userId, Pageable pageable) {
-        Page<RequestDTO> dto = service.getByUserId(userId, pageable);
+    @GetMapping("/user/{userLogin}")
+    public ResponseEntity<Page<RequestDTO>> getByUserLogin(
+            @PathVariable String userLogin, Pageable pageable) {
+        Page<RequestDTO> dto = service.getByUserLogin(userLogin, pageable);
         return ResponseEntity.ok(dto);
     }
-	
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_MANAGER')")
+    @GetMapping("/title/{title}")
+    public ResponseEntity<Page<RequestDTO>> getByTitle(
+            @PathVariable String title, Pageable pageable) {
+        Page<RequestDTO> requests = service.getByTitle(title, pageable);
+        return ResponseEntity.ok(requests);
+    }
 }
