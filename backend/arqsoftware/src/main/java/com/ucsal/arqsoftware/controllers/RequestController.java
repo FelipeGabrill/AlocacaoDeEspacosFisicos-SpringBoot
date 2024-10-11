@@ -1,5 +1,7 @@
 package com.ucsal.arqsoftware.controllers;
 
+import java.net.URI;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,10 +18,10 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.ucsal.arqsoftware.dto.RequestDTO;
+import com.ucsal.arqsoftware.entities.RequestStatus;
 import com.ucsal.arqsoftware.servicies.RequestService;
 
 import jakarta.validation.Valid;
-import java.net.URI;
 
 @RestController
 @RequestMapping(value = "/requests")
@@ -64,6 +66,42 @@ public class RequestController {
         service.delete(id);
         return ResponseEntity.noContent().build();
     }
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_MANAGER')")
+    @GetMapping("/asc")
+    public ResponseEntity<Page<RequestDTO>> getByDataAsc(Pageable pageable){
+    	Page<RequestDTO> dto = service.getByDataAsc(pageable);
+    	return ResponseEntity.ok(dto);
+    }
 
-	
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_MANAGER')")
+    @GetMapping("/desc")
+    public ResponseEntity<Page<RequestDTO>> getByDataDesc(Pageable pageable){
+    	Page<RequestDTO> dto = service.getByDataDesc(pageable);
+    	return ResponseEntity.ok(dto);
+    }
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_MANAGER')")
+    @GetMapping("/status/{status}")
+    public ResponseEntity<Page<RequestDTO>> getByStatusOrderByDateCreationRequestDesc(
+            @PathVariable RequestStatus status, Pageable pageable) {
+        Page<RequestDTO> dto = service.getByStatus(status, pageable);
+        return ResponseEntity.ok(dto);
+    }
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_MANAGER')")
+    @GetMapping("/user/{userLogin}")
+    public ResponseEntity<Page<RequestDTO>> getByUserLogin(
+            @PathVariable String userLogin, Pageable pageable) {
+        Page<RequestDTO> dto = service.getByUserLogin(userLogin, pageable);
+        return ResponseEntity.ok(dto);
+    }
+    
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_MANAGER')")
+    @GetMapping("/title/{title}")
+    public ResponseEntity<Page<RequestDTO>> getByTitle(
+            @PathVariable String title, Pageable pageable) {
+        Page<RequestDTO> requests = service.getByTitle(title, pageable);
+        return ResponseEntity.ok(requests);
+    }
 }

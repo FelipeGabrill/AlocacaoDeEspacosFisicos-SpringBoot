@@ -13,6 +13,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @Getter
@@ -30,10 +31,14 @@ public class PhysicalSpaceDTO {
 	private PhysicalSpaceType type;
 	
 	@Positive(message = "Capacidade deve ser positiva")
+	@NotNull
 	private Integer capacity;
 
 	@Size(max = 255, message = "Recursos não podem ter mais de 255 caracteres")
 	private String resources;
+	
+	@Setter
+	private Boolean availability;
 	
 	private List<RequestDTO> requests = new ArrayList<>();
 	
@@ -44,6 +49,7 @@ public class PhysicalSpaceDTO {
 		type = entity.getType();
 		capacity = entity.getCapacity();
 		resources = entity.getResources();
+		availability = entity.getAvailability();
 		for(Request req : entity.getRequests()) {
 			RequestDTO reqDTO = new RequestDTO(req);
 			requests.add(reqDTO);

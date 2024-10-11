@@ -154,4 +154,10 @@ public class UserService implements UserDetailsService {
 		User user = authenticated();
 		return new UserDTO(user);
 	}
+
+	@Transactional(readOnly = true)
+	public Page<UserDTO> getByLogin(String login, Pageable pageable) {
+        Page<User> result = repository.findByLoginIgnoreCaseContaining(login, pageable);
+        return result.map(UserDTO::new); 
+    }
 }

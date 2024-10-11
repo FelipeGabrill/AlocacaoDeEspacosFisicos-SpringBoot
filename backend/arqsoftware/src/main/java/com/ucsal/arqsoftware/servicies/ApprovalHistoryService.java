@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ucsal.arqsoftware.dto.ApprovalHistoryDTO;
 import com.ucsal.arqsoftware.entities.ApprovalHistory;
 import com.ucsal.arqsoftware.entities.Request;
+import com.ucsal.arqsoftware.entities.RequestStatus;
 import com.ucsal.arqsoftware.entities.User;
 import com.ucsal.arqsoftware.repositories.ApprovalHistoryRepository;
 import com.ucsal.arqsoftware.repositories.RequestRepository;
@@ -87,6 +88,9 @@ public class ApprovalHistoryService {
         entity.setObservation(dto.getObservation());
         entity.setUser(user);
         entity.setRequest(request);
+        
+        request.setStatus(dto.isDecision() ? RequestStatus.APPROVED : RequestStatus.REJECTED);
+        requestRepository.save(request);
        
     }
 }

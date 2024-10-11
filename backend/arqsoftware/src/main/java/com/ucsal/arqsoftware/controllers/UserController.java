@@ -73,4 +73,12 @@ public class UserController {
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
+	
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+    @GetMapping("/login/{login}")
+    public ResponseEntity<Page<UserDTO>> getByLogin(
+            @PathVariable String login, Pageable pageable) {
+        Page<UserDTO> users = service.getByLogin(login, pageable);
+        return ResponseEntity.ok(users);
+    }
 }

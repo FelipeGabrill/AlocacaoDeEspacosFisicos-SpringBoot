@@ -1,5 +1,8 @@
 package com.ucsal.arqsoftware.servicies;
 
+import java.time.Instant;
+import java.util.Date;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -11,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ucsal.arqsoftware.dto.RequestDTO;
 import com.ucsal.arqsoftware.entities.PhysicalSpace;
 import com.ucsal.arqsoftware.entities.Request;
+import com.ucsal.arqsoftware.entities.RequestStatus;
 import com.ucsal.arqsoftware.entities.User;
 import com.ucsal.arqsoftware.repositories.PhysicalSpaceRepository;
 import com.ucsal.arqsoftware.repositories.RequestRepository;
@@ -49,6 +53,8 @@ public class RequestService {
     public RequestDTO insert(RequestDTO dto) {
         Request entity = new Request();
         copyDtoToEntity(dto, entity);
+        entity.setStatus(RequestStatus.PENDING);
+        entity.setDateCreationRequest(Date.from(Instant.now()));
         entity = repository.save(entity);
         return new RequestDTO(entity);
     }
@@ -83,10 +89,43 @@ public class RequestService {
     	
         entity.setDateTimeStart(dto.getDateTimeStart());
         entity.setDateTimeEnd(dto.getDateTimeEnd());
-        entity.setDateCreationRequest(dto.getDateCreationRequest());
         entity.setNeeds(dto.getNeeds());
-        entity.setStatus(dto.getStatus());   
+        entity.setTitle(dto.getTitle());  
         entity.setUser(user);
         entity.setPhysicalSpace(physicalSpace);        
     }
+
+    @Transactional(readOnly = true)
+	public Page<RequestDTO> getByDataAsc(Pageable pageable) {
+		Page<Request> result = repository.findAllByOrderByDateCreationRequestAsc(pageable);
+		return result.map(RequestDTO::new);
+	}
+
+	@Transactional(readOnly = true)
+	public Page<RequestDTO> getByDataDesc(Pageable pageable) {
+		Page<Request> result = repository.findAllByOrderByDateCreationRequestDesc(pageable);
+		return result.map(RequestDTO::new);	
+	}
+	
+	@Transactional(readOnly = true)
+	public Page<RequestDTO> getByStatus(RequestStatus status, Pageable pageable) {
+		 Page<Request> result = repository.findAllByStatus(status, pageable);
+	     return result.map(RequestDTO::new);
+	}
+
+	@Transactional(readOnly = true)
+	public Page<RequestDTO> getByUserLogin(String userLogin, Pageable pageable) {
+	    User user = userRepository.findByLogin(userLogin)
+	        .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com o login: " + userLogin));
+	    
+	    Long userId = user.getId();
+	    Page<Request> requests = repository.findAllByUserId(userId, pageable);
+	    return requests.map(RequestDTO::new);
+	}
+
+	@Transactional(readOnly = true)
+	public Page<RequestDTO> getByTitle(String title, Pageable pageable) {
+	   Page<Request> result = repository.findByTitleIgnoreCaseContaining(title, pageable);
+	   return result.map(RequestDTO::new);
+	}
 }

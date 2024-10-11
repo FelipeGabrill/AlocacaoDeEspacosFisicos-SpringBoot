@@ -7,8 +7,8 @@ import com.ucsal.arqsoftware.entities.RequestStatus;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +17,9 @@ import lombok.NoArgsConstructor;
 public class RequestDTO {
 	
 	private Long id;
+	
+	@Size(min = 12, max = 40, message = "O título deve ter entre 12 e 40 caracteres.")
+	private String title;
 	
 	@FutureOrPresent(message = "A data deve ser a atual ou uma data futura")
 	private Date dateTimeStart;
@@ -30,7 +33,6 @@ public class RequestDTO {
 	@NotBlank(message = "Necessidades não podem ser vazias")
 	private String needs;
 	
-	@NotNull(message = "Status não pode ser nulo")
 	private RequestStatus status;
 	
 	@Positive(message = "ID do espaço físico deve ser positivo")
@@ -43,6 +45,7 @@ public class RequestDTO {
 
 	public RequestDTO(Request entity) {
 		id = entity.getId();
+		title = entity.getTitle();
 		dateTimeStart = entity.getDateTimeStart();
 		dateTimeEnd = entity.getDateTimeEnd();
 		dateCreationRequest = entity.getDateCreationRequest();
