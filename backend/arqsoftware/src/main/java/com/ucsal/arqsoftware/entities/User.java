@@ -9,6 +9,7 @@ import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -63,7 +64,7 @@ public class User implements UserDetails {
 	private List<ApprovalHistory> approvalHistories = new ArrayList<>();
 	
 	@Getter
-	@OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Request> requests = new ArrayList<>();
 
 	public User() {	

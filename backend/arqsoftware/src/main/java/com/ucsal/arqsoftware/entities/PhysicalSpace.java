@@ -3,6 +3,7 @@ package com.ucsal.arqsoftware.entities;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -44,7 +45,7 @@ public class PhysicalSpace {
 	@Setter
 	private String resources;
 	
-	@OneToMany(mappedBy = "physicalSpace")
+	@OneToMany(mappedBy = "physicalSpace", cascade = CascadeType.ALL, orphanRemoval = true)
 	private Set<Request> requests = new HashSet<>();
 	
 	public PhysicalSpace() {
