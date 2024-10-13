@@ -1,18 +1,19 @@
 package com.ucsal.arqsoftware.aspects;
 
+import java.lang.reflect.Method;
+
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Component;
 import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.stereotype.Component;
 
 import com.ucsal.arqsoftware.dto.PhysicalSpaceDTO;
 import com.ucsal.arqsoftware.servicies.AuditService;
-
-import java.lang.reflect.Method;
 
 @Aspect
 @Component
@@ -31,9 +32,11 @@ public class AuditAspect {
         logAction(joinPoint, "Updated", getResourceId(user));
     }
 
-    @AfterReturning(pointcut = "execution(* com.ucsal.arqsoftware.servicies.UserService.delete(..))", returning = "user")
-    public void logAfterUserDelete(JoinPoint joinPoint, Object user) {
-        logAction(joinPoint, "Deleted", getResourceId(user));
+    @After("execution(* com.ucsal.arqsoftware.servicies.UserService.delete(..))")
+    public void logAfterUserDelete(JoinPoint joinPoint) {
+        Object[] args = joinPoint.getArgs();
+        Long userId = (Long) args[0];
+        logAction(joinPoint, "Deleted", userId);
     }
 
     @AfterReturning(pointcut = "execution(* com.ucsal.arqsoftware.servicies.PhysicalSpaceService.insert(..))", returning = "physicalSpace")
@@ -46,9 +49,11 @@ public class AuditAspect {
         logAction(joinPoint, "Updated", physicalSpace.getId());
     }
 
-    @AfterReturning(pointcut = "execution(* com.ucsal.arqsoftware.servicies.PhysicalSpaceService.delete(..))", returning = "physicalSpace")
-    public void logAfterPhysicalDelete(JoinPoint joinPoint, PhysicalSpaceDTO physicalSpace) {
-        logAction(joinPoint, "Deleted", physicalSpace.getId());
+    @After("execution(* com.ucsal.arqsoftware.servicies.PhysicalSpaceService.delete(..))")
+    public void logAfterPhysicalDelete(JoinPoint joinPoint) {
+        Object[] args = joinPoint.getArgs();
+        Long physicalSpaceId = (Long) args[0]; 
+        logAction(joinPoint, "Deleted", physicalSpaceId);
     }
 
     @AfterReturning(pointcut = "execution(* com.ucsal.arqsoftware.servicies.RequestService.insert(..))", returning = "request")
@@ -61,11 +66,13 @@ public class AuditAspect {
         logAction(joinPoint, "Updated", getResourceId(request));
     }
 
-    @AfterReturning(pointcut = "execution(* com.ucsal.arqsoftware.servicies.RequestService.delete(..))", returning = "request")
-    public void logAfterRequestDelete(JoinPoint joinPoint, Object request) {
-        logAction(joinPoint, "Deleted", getResourceId(request));
+    @After("execution(* com.ucsal.arqsoftware.servicies.RequestService.delete(..))")
+    public void logAfterRequestDelete(JoinPoint joinPoint) {
+        Object[] args = joinPoint.getArgs();
+        Long requestId = (Long) args[0]; 
+        logAction(joinPoint, "Deleted", requestId);
     }
-
+    
     @AfterReturning(pointcut = "execution(* com.ucsal.arqsoftware.servicies.ApprovalHistoryService.insert(..))", returning = "approval")
     public void logAfterApprovalInsert(JoinPoint joinPoint, Object approval) {
         logAction(joinPoint, "Inserted", getResourceId(approval));
@@ -73,14 +80,16 @@ public class AuditAspect {
 
     @AfterReturning(pointcut = "execution(* com.ucsal.arqsoftware.servicies.ApprovalHistoryService.update(..))", returning = "approval")
     public void logAfterApprovalUpdate(JoinPoint joinPoint, Object approval) {
-        logAction(joinPoint, "Modified", getResourceId(approval));
+        logAction(joinPoint, "Updated", getResourceId(approval));
     }
 
-    @AfterReturning(pointcut = "execution(* com.ucsal.arqsoftware.servicies.ApprovalHistoryService.delete(..))", returning = "approval")
-    public void logAfterApprovalDelete(JoinPoint joinPoint, Object approval) {
-        logAction(joinPoint, "Deleted", getResourceId(approval));
+    @After("execution(* com.ucsal.arqsoftware.servicies.ApprovalHistoryService.delete(..))")
+    public void logAfterApprovalDelete(JoinPoint joinPoint) {
+        Object[] args = joinPoint.getArgs();
+        Long approvalId = (Long) args[0];
+        logAction(joinPoint, "Deleted", approvalId);
     }
-
+    
     private void logAction(JoinPoint joinPoint, String action, Long resourceId) {
         String username = getLoggedUser();  
         String resourceType = getResourceType(joinPoint);

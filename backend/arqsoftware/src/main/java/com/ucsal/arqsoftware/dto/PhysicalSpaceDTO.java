@@ -31,9 +31,10 @@ public class PhysicalSpaceDTO {
 	private PhysicalSpaceType type;
 	
 	@Positive(message = "Capacidade deve ser positiva")
-	@NotNull
+	@NotNull(message = "Capacidade não pode ser vazia")
 	private Integer capacity;
 
+	@NotBlank(message = "Recursos não pode ser vazio")
 	@Size(max = 255, message = "Recursos não podem ter mais de 255 caracteres")
 	private String resources;
 	
