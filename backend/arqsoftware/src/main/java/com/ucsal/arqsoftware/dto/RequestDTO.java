@@ -7,6 +7,7 @@ import com.ucsal.arqsoftware.entities.RequestStatus;
 
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -19,11 +20,14 @@ public class RequestDTO {
 	private Long id;
 	
 	@Size(min = 12, max = 40, message = "O título deve ter entre 12 e 40 caracteres.")
+	@NotBlank(message = "Titulos não podem ser vazias")
 	private String title;
 	
+	@NotNull(message = "A data de início não pode ser nula")
 	@FutureOrPresent(message = "A data deve ser a atual ou uma data futura")
 	private Date dateTimeStart;
 	
+	@NotNull(message = "A data de término não pode ser nula")
 	@FutureOrPresent(message = "A data deve ser a atual ou uma data futura")
 	private Date dateTimeEnd;
 	
@@ -36,9 +40,11 @@ public class RequestDTO {
 	private RequestStatus status;
 	
 	@Positive(message = "ID do espaço físico deve ser positivo")
+	@NotNull(message = "Campo de espaço não pode ser vazio")
 	private Long physicalSpaceId;
 	
 	@Positive(message = "ID do usuário deve ser positivo")
+	@NotNull(message = "Campo de usuário não pode ser vazio")
 	private Long userId;
 	
 	private ApprovalHistoryDTO approvalHistory;
