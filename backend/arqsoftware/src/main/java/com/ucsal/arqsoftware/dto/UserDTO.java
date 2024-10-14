@@ -20,7 +20,7 @@ public class UserDTO {
 	private Long id;
 
 	@NotBlank(message = "Nome de usuário não pode ser vazio")
-	private String username;
+	private String usernameUser;
 	
 	@NotBlank(message = "Login não pode ser vazio")
 	private String login;
@@ -35,8 +35,8 @@ public class UserDTO {
 	
 	public UserDTO(User entity) {
 		id = entity.getId();
-		username = entity.getUsername();
-		login = entity.getLogin();
+		usernameUser = entity.getUsernameUser();
+		login = entity.getUsername();
 		entity.getRoles().forEach(role -> this.roles.add(new RoleDTO(role)));
 		requests = entity.getRequests().stream()
 	            .map(RequestDTO::new) 

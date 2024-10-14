@@ -41,11 +41,11 @@ public class User implements UserDetails {
 	private Long id;
 	
 	@Setter
-	private String username;
+	@Getter
+	private String usernameUser;
 	
 	@Column(unique = true)
 	@Setter
-	@Getter
 	private String login;
 	
 	@Setter

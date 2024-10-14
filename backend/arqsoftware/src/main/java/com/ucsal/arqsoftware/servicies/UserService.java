@@ -96,7 +96,7 @@ public class UserService implements UserDetailsService {
 
 	private void copyDtoToEntity(UserDTO dto, User entity) {
 
-		entity.setUsername(dto.getUsername());
+		entity.setUsernameUser(dto.getUsernameUser());
 		entity.setLogin(dto.getLogin());
 
 		entity.getRoles().clear();
