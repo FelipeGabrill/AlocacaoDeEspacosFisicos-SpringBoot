@@ -38,14 +38,14 @@ public class UserController {
 		return ResponseEntity.ok(dto);
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_MANAGER')")
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<UserDTO> findById(@PathVariable Long id) {
 		UserDTO dto = service.findById(id);
 		return ResponseEntity.ok(dto);
 	}
 
-	@PreAuthorize("hasAnyRole('ROLE_ADMIN')")
+	@PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_MANAGER')")
 	@GetMapping
 	public ResponseEntity<Page<UserDTO>> findByAll(Pageable pageable) {
 		Page<UserDTO> dto = service.findAll(pageable);
