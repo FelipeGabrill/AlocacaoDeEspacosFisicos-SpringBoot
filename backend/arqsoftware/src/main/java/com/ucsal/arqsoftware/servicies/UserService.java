@@ -99,23 +99,30 @@ public class UserService implements UserDetailsService {
 		entity.setUsernameUser(dto.getUsernameUser());
 		entity.setLogin(dto.getLogin());
 
-		entity.getRoles().clear();
 		for (RoleDTO roleDto : dto.getRoles()) {
-			Role role = roleRepository.getReferenceById(roleDto.getId());
-			entity.getRoles().add(role);
+			boolean exists = entity.getRoles().stream().anyMatch(role -> role.getId().equals(roleDto.getId()));
+			if (!exists) {
+				Role role = roleRepository.getReferenceById(roleDto.getId());
+				entity.getRoles().add(role);
+			}
 		}
 
-		entity.getRequests().clear();
 		for (RequestDTO reqDto : dto.getRequests()) {
-			Request req = new Request();
-			req.setId(reqDto.getId());
-			entity.getRequests().add(req);
+			boolean exists = entity.getRequests().stream().anyMatch(req -> req.getId().equals(reqDto.getId()));
+			if (!exists) {
+				Request req = new Request();
+				req.setId(reqDto.getId());
+				entity.getRequests().add(req);
+			}
 		}
-		entity.getApprovalHistories().clear();
+
 		for (ApprovalHistoryDTO aprDto : dto.getApprovalHistories()) {
-			ApprovalHistory apr = new ApprovalHistory();
-			apr.setId(aprDto.getId());
-			entity.getApprovalHistories().add(apr);
+			boolean exists = entity.getApprovalHistories().stream().anyMatch(apr -> apr.getId().equals(aprDto.getId()));
+			if (!exists) {
+				ApprovalHistory apr = new ApprovalHistory();
+				apr.setId(aprDto.getId());
+				entity.getApprovalHistories().add(apr);
+			}
 		}
 	}
 
@@ -157,7 +164,7 @@ public class UserService implements UserDetailsService {
 
 	@Transactional(readOnly = true)
 	public Page<UserDTO> getByLogin(String login, Pageable pageable) {
-        Page<User> result = repository.findByLoginIgnoreCaseContaining(login, pageable);
-        return result.map(UserDTO::new); 
-    }
+		Page<User> result = repository.findByLoginIgnoreCaseContaining(login, pageable);
+		return result.map(UserDTO::new);
+	}
 }
