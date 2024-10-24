@@ -79,11 +79,14 @@ public class PhysicalSpaceService {
 		entity.setType(dto.getType());
 		entity.setResources(dto.getResources());
 		entity.setAvailability(dto.getAvailability());
-		entity.getRequests().clear();
 		for (RequestDTO reqDto : dto.getRequests()) {
-			Request req = new Request();
-			req.setId(reqDto.getId());
-			entity.getRequests().add(req);
+			boolean exists = entity.getRequests().stream()
+					.anyMatch(req -> req.getId().equals(reqDto.getId()));
+			if (!exists) {
+				Request req = new Request();
+				req.setId(reqDto.getId());
+				entity.getRequests().add(req);
+			}
 		}
 	}
 
