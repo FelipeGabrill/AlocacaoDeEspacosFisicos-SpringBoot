@@ -1,5 +1,7 @@
 package com.ucsal.arqsoftware.servicies;
 
+import com.ucsal.arqsoftware.queryfilters.PhysicalSpaceQueryFilter;
+import com.ucsal.arqsoftware.specifications.PhysicalSpaceSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -33,8 +35,8 @@ public class PhysicalSpaceService {
 	}
 	
 	@Transactional(readOnly = true)
-	public Page<PhysicalSpaceDTO> findAll(Pageable pageable) {
-		Page<PhysicalSpace> result = repository.findAll(pageable);
+	public Page<PhysicalSpaceDTO> findAll(PhysicalSpaceQueryFilter filter, Pageable pageable) {
+		Page<PhysicalSpace> result = repository.findAll(filter.toSpecification(),pageable);
 		return result.map(x -> new PhysicalSpaceDTO(x));
 	}
 	

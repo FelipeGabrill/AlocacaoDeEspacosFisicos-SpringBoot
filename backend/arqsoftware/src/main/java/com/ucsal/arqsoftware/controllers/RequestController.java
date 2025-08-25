@@ -2,6 +2,7 @@ package com.ucsal.arqsoftware.controllers;
 
 import java.net.URI;
 
+import com.ucsal.arqsoftware.queryfilters.RequestQueryFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -39,8 +40,8 @@ public class RequestController {
 
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_MANAGER')")
     @GetMapping
-    public ResponseEntity<Page<RequestDTO>> findAll(Pageable pageable) {
-        Page<RequestDTO> dto = service.findAll(pageable);
+    public ResponseEntity<Page<RequestDTO>> findAll(RequestQueryFilter filter, Pageable pageable) {
+        Page<RequestDTO> dto = service.findAll(filter, pageable);
         return ResponseEntity.ok(dto);
     }
 

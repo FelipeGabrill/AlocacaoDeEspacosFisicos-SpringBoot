@@ -2,9 +2,11 @@ package com.ucsal.arqsoftware.dto;
 
 import java.util.Date;
 
+import com.ucsal.arqsoftware.entities.PhysicalSpace;
 import com.ucsal.arqsoftware.entities.Request;
 import com.ucsal.arqsoftware.entities.RequestStatus;
 
+import com.ucsal.arqsoftware.entities.User;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -61,7 +63,8 @@ public class RequestDTO {
 		userId = entity.getUser().getId();
 		approvalHistory = (entity.getApprovalHistory() == null) ? null : new ApprovalHistoryDTO(entity.getApprovalHistory());
 	}
-	
-	
-	
+
+
+    public RequestDTO(Request r, User user, PhysicalSpace physicalSpace) {
+    }
 }

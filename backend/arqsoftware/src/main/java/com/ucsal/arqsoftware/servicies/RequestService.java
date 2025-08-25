@@ -2,10 +2,14 @@ package com.ucsal.arqsoftware.servicies;
 
 import java.time.Instant;
 import java.util.Date;
+import java.util.List;
 
+import com.ucsal.arqsoftware.queryfilters.RequestQueryFilter;
+import org.aspectj.weaver.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -44,8 +48,8 @@ public class RequestService {
     }
 
     @Transactional(readOnly = true)
-    public Page<RequestDTO> findAll(Pageable pageable) {
-        Page<Request> result = repository.findAll(pageable);
+    public Page<RequestDTO> findAll(RequestQueryFilter filter, Pageable pageable) {
+        Page<Request> result = repository.findAll(filter.toSpecification(), pageable);
         return result.map(RequestDTO::new);
     }
 
