@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 				WHERE tb_user.login = :login
 			""")
 	List<UserDetailsProjection> searchUserAndRolesByLogin(String login);
-	
+
 	Optional<User> findByLogin(String login);
 
 	boolean existsByLogin(String login);
