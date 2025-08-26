@@ -21,6 +21,10 @@ import com.ucsal.arqsoftware.servicies.exceptions.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 
+import java.time.Instant;
+import java.util.Date;
+import java.util.List;
+
 @Service
 public class ApprovalHistoryService {
 
@@ -50,7 +54,28 @@ public class ApprovalHistoryService {
     public ApprovalHistoryDTO insert(ApprovalHistoryDTO dto) {
     	ApprovalHistory entity = new ApprovalHistory();
         copyDtoToEntity(dto, entity);
+        entity.setDateTime(Date.from(Instant.now()));
         entity = repository.save(entity);
+
+        if (entity.isDecision()) {
+            List<Request> pendingRequests = requestRepository
+                    .findByPhysicalSpaceAndStatusAndDateTimeStartLessThanEqualAndDateTimeEndGreaterThanEqual(
+                            entity.getRequest().getPhysicalSpace(),
+                            RequestStatus.PENDING,
+                            entity.getRequest().getDateTimeEnd(),
+                            entity.getRequest().getDateTimeStart()
+                    );
+
+
+            for (Request r : pendingRequests) {
+                if (!r.getId().equals(entity.getRequest().getId())) {
+                    r.setStatus(RequestStatus.REJECTED);
+                }
+            }
+
+            requestRepository.saveAll(pendingRequests);
+        }
+
         return new ApprovalHistoryDTO(entity);
     }
 

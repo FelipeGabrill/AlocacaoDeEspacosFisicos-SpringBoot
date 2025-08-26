@@ -1,7 +1,6 @@
 package com.ucsal.arqsoftware.servicies;
 
 import com.ucsal.arqsoftware.queryfilters.PhysicalSpaceQueryFilter;
-import com.ucsal.arqsoftware.specifications.PhysicalSpaceSpec;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;

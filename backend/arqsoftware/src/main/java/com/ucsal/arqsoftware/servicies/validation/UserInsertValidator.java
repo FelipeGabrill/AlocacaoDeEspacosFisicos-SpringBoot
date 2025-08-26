@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 
-import com.ucsal.arqsoftware.controller.exception.FieldMessage;
+import com.ucsal.arqsoftware.controllers.exception.FieldMessage;
 import com.ucsal.arqsoftware.dto.UserInsertDTO;
 import com.ucsal.arqsoftware.repositories.UserRepository;
 

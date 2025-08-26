@@ -7,7 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 
-import com.ucsal.arqsoftware.controller.exception.FieldMessage;
+import com.ucsal.arqsoftware.controllers.exception.FieldMessage;
 import com.ucsal.arqsoftware.dto.UserUpdateDTO;
 import com.ucsal.arqsoftware.entities.User;
 import com.ucsal.arqsoftware.repositories.UserRepository;

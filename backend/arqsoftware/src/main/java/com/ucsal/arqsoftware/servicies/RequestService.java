@@ -2,14 +2,11 @@ package com.ucsal.arqsoftware.servicies;
 
 import java.time.Instant;
 import java.util.Date;
-import java.util.List;
 
 import com.ucsal.arqsoftware.queryfilters.RequestQueryFilter;
-import org.aspectj.weaver.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -55,6 +52,19 @@ public class RequestService {
 
     @Transactional
     public RequestDTO insert(RequestDTO dto) {
+        PhysicalSpace physicalSpace = physicalSpaceRepository.getReferenceById(dto.getPhysicalSpaceId());
+
+        boolean conflito = repository.existsByPhysicalSpaceAndStatusAndDateTimeStartLessThanEqualAndDateTimeEndGreaterThanEqual(
+                physicalSpace,
+                RequestStatus.APPROVED,
+                dto.getDateTimeEnd(),
+                dto.getDateTimeStart()
+        );
+
+        if (conflito) {
+            throw new DatabaseException("Já existe uma requisição aprovada neste espaço físico nesse horário.");
+        }
+
         Request entity = new Request();
         copyDtoToEntity(dto, entity);
         entity.setStatus(RequestStatus.PENDING);

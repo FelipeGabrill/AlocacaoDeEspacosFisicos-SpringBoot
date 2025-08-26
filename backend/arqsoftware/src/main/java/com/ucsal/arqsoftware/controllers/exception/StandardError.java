@@ -1,4 +1,4 @@
-package com.ucsal.arqsoftware.controller.exception;
+package com.ucsal.arqsoftware.controllers.exception;
 
 import java.io.Serializable;
 import java.time.Instant;

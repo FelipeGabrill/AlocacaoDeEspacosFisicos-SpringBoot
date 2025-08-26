@@ -7,6 +7,7 @@ import com.ucsal.arqsoftware.entities.Request;
 import com.ucsal.arqsoftware.entities.RequestStatus;
 
 import com.ucsal.arqsoftware.entities.User;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -18,38 +19,48 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 public class RequestDTO {
-	
-	private Long id;
-	
-	@Size(min = 12, max = 40, message = "O título deve ter entre 12 e 40 caracteres.")
+
+    @Schema(description = "Unique identifier of the request", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
+    private Long id;
+
+    @Schema(description = "Title of the request", example = "Request for Room 101", required = true)
+    @Size(min = 12, max = 40, message = "O título deve ter entre 12 e 40 caracteres.")
 	@NotBlank(message = "Titulos não podem ser vazias")
 	private String title;
-	
-	@NotNull(message = "A data de início não pode ser nula")
+
+    @Schema(description = "Start date and time of the request", example = "2025-12-10T15:00:00", required = true)
+    @NotNull(message = "A data de início não pode ser nula")
 	@FutureOrPresent(message = "A data deve ser a atual ou uma data futura")
 	private Date dateTimeStart;
-	
-	@NotNull(message = "A data de término não pode ser nula")
+
+    @Schema(description = "End date and time of the request", example = "2025-12-10T17:00:00", required = true)
+    @NotNull(message = "A data de término não pode ser nula")
 	@FutureOrPresent(message = "A data deve ser a atual ou uma data futura")
 	private Date dateTimeEnd;
-	
+
+    @Schema(description = "Date when the request was created", example = "2025-08-25T10:30:00", accessMode = Schema.AccessMode.READ_ONLY)
 	@FutureOrPresent(message = "A data deve ser a atual ou uma data futura")
 	private Date dateCreationRequest;
-	
-	@NotBlank(message = "Necessidades não podem ser vazias")
+
+    @Schema(description = "Description of the user's needs for the request", example = "Projector needed for presentation", required = true)
+    @NotBlank(message = "Necessidades não podem ser vazias")
 	private String needs;
-	
-	private RequestStatus status;
-	
-	@Positive(message = "ID do espaço físico deve ser positivo")
+
+    @Schema(description = "Status of the request", example = "PENDING", accessMode = Schema.AccessMode.READ_ONLY)
+    private RequestStatus status;
+
+    @Schema(description = "ID of the physical space associated with the request", example = "2", required = true)
+    @Positive(message = "ID do espaço físico deve ser positivo")
 	@NotNull(message = "Campo de espaço não pode ser vazio")
 	private Long physicalSpaceId;
-	
-	@Positive(message = "ID do usuário deve ser positivo")
+
+    @Schema(description = "ID of the user making the request", example = "1", required = true)
+    @Positive(message = "ID do usuário deve ser positivo")
 	@NotNull(message = "Campo de usuário não pode ser vazio")
 	private Long userId;
-	
-	private ApprovalHistoryDTO approvalHistory;
+
+    @Schema(description = "Approval history associated with the request", accessMode = Schema.AccessMode.READ_ONLY)
+    private ApprovalHistoryDTO approvalHistory;
 
 	public RequestDTO(Request entity) {
 		id = entity.getId();
