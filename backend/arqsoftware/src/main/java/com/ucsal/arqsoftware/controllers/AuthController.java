@@ -5,6 +5,7 @@ import com.ucsal.arqsoftware.dto.NewPasswordDTO;
 import com.ucsal.arqsoftware.servicies.AuthService;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
@@ -49,5 +50,20 @@ public class AuthController {
     public ResponseEntity<Void> saveNewPassword(@Valid @RequestBody NewPasswordDTO dto) {
         authService.saveNewPassword(dto);
         return ResponseEntity.noContent().build();
+    }
+
+    @Operation(
+            summary = "Validate Recovery Token",
+            description = "Check whether a password recovery token is valid",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK – returns true if token is valid"),
+                    @ApiResponse(responseCode = "400", description = "Bad Request – token missing or invalid format")
+            }
+    )
+    @GetMapping("/validate-token")
+    public ResponseEntity<Boolean> validateToken(@Parameter(description = "Recovery token to validate", required = true)
+                                                     @RequestParam String token) {
+        boolean valid = authService.isValidToken(token);
+        return ResponseEntity.ok(valid);
     }
 }

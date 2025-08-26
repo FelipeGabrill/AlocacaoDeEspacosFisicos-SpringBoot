@@ -6,7 +6,9 @@ import com.ucsal.arqsoftware.entities.PasswordRecover;
 import com.ucsal.arqsoftware.entities.User;
 import com.ucsal.arqsoftware.repositories.PasswordRecoverRepository;
 import com.ucsal.arqsoftware.repositories.UserRepository;
+import com.ucsal.arqsoftware.servicies.exceptions.InvalidTokenException;
 import com.ucsal.arqsoftware.servicies.exceptions.ResourceNotFoundException;
+import com.ucsal.arqsoftware.servicies.exceptions.TokenExpiredException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -74,5 +76,17 @@ public class AuthService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found with login: " + email));;
         user.setPassword(passwordEncoder.encode(body.getPassword()));
         userRepository.save(user);
+    }
+
+    @Transactional
+    public boolean isValidToken(String token) {
+        PasswordRecover recover = passwordRecoverRepository.findByToken(token)
+                .orElseThrow(() -> new InvalidTokenException("Token not found"));
+
+        if (recover.getExpiration().isBefore(Instant.now())) {
+            throw new TokenExpiredException("Token expired");
+        }
+
+        return true;
     }
 }
