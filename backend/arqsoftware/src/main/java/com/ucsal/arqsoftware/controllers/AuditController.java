@@ -1,8 +1,7 @@
 package com.ucsal.arqsoftware.controllers;
 
-import java.util.List;
-
 import com.ucsal.arqsoftware.dto.AuditDTO;
+import com.ucsal.arqsoftware.queryfilters.AuditQueryFilter;
 import com.ucsal.arqsoftware.servicies.AuditService;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,7 +9,10 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
+import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -36,8 +38,8 @@ public class AuditController {
     )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/logs")
-    public ResponseEntity<List<AuditDTO>> getAllAuditLogs() {
-        List<AuditDTO> auditLogs = auditService.getAllAuditLogs();
+    public ResponseEntity<Page<AuditDTO>> getAllAuditLogs(@ParameterObject AuditQueryFilter filter, Pageable pageable) {
+        Page<AuditDTO> auditLogs = auditService.getAllAuditLogs(filter, pageable);
         return ResponseEntity.ok(auditLogs);
     }
 }

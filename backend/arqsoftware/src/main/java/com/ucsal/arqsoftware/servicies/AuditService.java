@@ -1,6 +1,9 @@
 package com.ucsal.arqsoftware.servicies;
 
+import com.ucsal.arqsoftware.queryfilters.AuditQueryFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +26,8 @@ public class AuditService {
         auditLogRepository.save(log);
     }
 
-    public List<AuditDTO> getAllAuditLogs() {
-        return auditLogRepository.findAll().stream()
-                .map(AuditDTO::new)
-                .collect(Collectors.toList());
+    public Page<AuditDTO> getAllAuditLogs(AuditQueryFilter filter, Pageable pageable) {
+        Page<AuditLog> result = auditLogRepository.findAll(filter.toSpecification(), pageable);
+        return result.map(AuditDTO::new);
     }
 }
