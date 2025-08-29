@@ -1,7 +1,7 @@
 package com.ucsal.arqsoftware.queryfilters;
 
 import com.ucsal.arqsoftware.entities.Request;
-import com.ucsal.arqsoftware.entities.RequestStatus;
+import com.ucsal.arqsoftware.entities.enums.RequestStatus;
 import com.ucsal.arqsoftware.specifications.RequestSpec;
 import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;

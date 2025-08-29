@@ -1,7 +1,7 @@
 package com.ucsal.arqsoftware.specifications;
 
 import com.ucsal.arqsoftware.entities.PhysicalSpace;
-import com.ucsal.arqsoftware.entities.PhysicalSpaceType;
+import com.ucsal.arqsoftware.entities.enums.PhysicalSpaceType;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.ObjectUtils;
 

@@ -1,5 +1,8 @@
 package com.ucsal.arqsoftware.servicies;
 
+import com.ucsal.arqsoftware.job.MarkAvailableJob;
+import com.ucsal.arqsoftware.job.MarkUnavailableJob;
+import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
@@ -11,7 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ucsal.arqsoftware.dto.ApprovalHistoryDTO;
 import com.ucsal.arqsoftware.entities.ApprovalHistory;
 import com.ucsal.arqsoftware.entities.Request;
-import com.ucsal.arqsoftware.entities.RequestStatus;
+import com.ucsal.arqsoftware.entities.enums.RequestStatus;
 import com.ucsal.arqsoftware.entities.User;
 import com.ucsal.arqsoftware.repositories.ApprovalHistoryRepository;
 import com.ucsal.arqsoftware.repositories.RequestRepository;
@@ -37,6 +40,9 @@ public class ApprovalHistoryService {
     @Autowired
     private RequestRepository requestRepository;
 
+    @Autowired
+    private Scheduler scheduler;
+
     @Transactional(readOnly = true)
     public ApprovalHistoryDTO findById(Long id) {
         ApprovalHistory approvalHistory = repository.findById(id).orElseThrow(
@@ -51,7 +57,7 @@ public class ApprovalHistoryService {
     }
 
     @Transactional
-    public ApprovalHistoryDTO insert(ApprovalHistoryDTO dto) {
+    public ApprovalHistoryDTO insert(ApprovalHistoryDTO dto) throws SchedulerException {
     	ApprovalHistory entity = new ApprovalHistory();
         copyDtoToEntity(dto, entity);
         entity.setDateTime(Date.from(Instant.now()));
@@ -74,6 +80,29 @@ public class ApprovalHistoryService {
             }
 
             requestRepository.saveAll(pendingRequests);
+
+            JobDetail jobInicio = JobBuilder.newJob(MarkUnavailableJob.class)
+                    .withIdentity("markUnavailableJob_" + entity.getRequest().getId())
+                    .usingJobData("approvalHistoryId", entity.getRequest().getId())
+                    .build();
+
+            Trigger triggerInicio = TriggerBuilder.newTrigger()
+                    .startAt(Date.from(entity.getRequest().getDateTimeStart().toInstant()))
+                    .build();
+
+            scheduler.scheduleJob(jobInicio, triggerInicio);
+
+            JobDetail jobFim = JobBuilder.newJob(MarkAvailableJob.class)
+                    .withIdentity("markAvailableJob_" + entity.getId())
+                    .usingJobData("approvalHistoryId", entity.getId())
+                    .build();
+
+            Trigger triggerFim = TriggerBuilder.newTrigger()
+                    .startAt(Date.from(entity.getRequest().getDateTimeEnd().toInstant()))
+                    .build();
+
+            scheduler.scheduleJob(jobFim, triggerFim);
+
         }
 
         return new ApprovalHistoryDTO(entity);

@@ -2,6 +2,7 @@ package com.ucsal.arqsoftware.entities;
 
 import java.util.Date;
 
+import com.ucsal.arqsoftware.entities.enums.RequestStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

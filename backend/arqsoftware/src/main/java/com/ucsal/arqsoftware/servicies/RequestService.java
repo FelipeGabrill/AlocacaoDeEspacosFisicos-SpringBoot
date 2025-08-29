@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ucsal.arqsoftware.dto.RequestDTO;
 import com.ucsal.arqsoftware.entities.PhysicalSpace;
 import com.ucsal.arqsoftware.entities.Request;
-import com.ucsal.arqsoftware.entities.RequestStatus;
+import com.ucsal.arqsoftware.entities.enums.RequestStatus;
 import com.ucsal.arqsoftware.entities.User;
 import com.ucsal.arqsoftware.repositories.PhysicalSpaceRepository;
 import com.ucsal.arqsoftware.repositories.RequestRepository;
@@ -36,7 +36,7 @@ public class RequestService {
     
     @Autowired
     private PhysicalSpaceRepository physicalSpaceRepository;
-    
+
     @Transactional(readOnly = true)
     public RequestDTO findById(Long id) {
         Request request = repository.findById(id).orElseThrow(

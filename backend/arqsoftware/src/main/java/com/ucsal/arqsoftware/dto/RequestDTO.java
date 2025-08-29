@@ -4,7 +4,7 @@ import java.util.Date;
 
 import com.ucsal.arqsoftware.entities.PhysicalSpace;
 import com.ucsal.arqsoftware.entities.Request;
-import com.ucsal.arqsoftware.entities.RequestStatus;
+import com.ucsal.arqsoftware.entities.enums.RequestStatus;
 
 import com.ucsal.arqsoftware.entities.User;
 import io.swagger.v3.oas.annotations.media.Schema;

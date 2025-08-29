@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import com.ucsal.arqsoftware.entities.Request;
-import com.ucsal.arqsoftware.entities.RequestStatus;
+import com.ucsal.arqsoftware.entities.enums.RequestStatus;
 
 import java.util.Date;
 import java.util.List;

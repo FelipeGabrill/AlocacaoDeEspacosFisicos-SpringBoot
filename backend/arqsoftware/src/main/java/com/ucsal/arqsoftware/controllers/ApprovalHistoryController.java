@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
+import org.quartz.SchedulerException;
 import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -75,7 +76,7 @@ public class ApprovalHistoryController {
     )
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')")
     @PostMapping
-    public ResponseEntity<ApprovalHistoryDTO> insert(@Valid @RequestBody ApprovalHistoryDTO dto) {
+    public ResponseEntity<ApprovalHistoryDTO> insert(@Valid @RequestBody ApprovalHistoryDTO dto) throws SchedulerException {
         dto = service.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")

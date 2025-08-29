@@ -4,7 +4,7 @@ import java.net.URI;
 
 import com.ucsal.arqsoftware.queryfilters.RequestQueryFilter;
 import com.ucsal.arqsoftware.dto.RequestDTO;
-import com.ucsal.arqsoftware.entities.RequestStatus;
+import com.ucsal.arqsoftware.entities.enums.RequestStatus;
 import com.ucsal.arqsoftware.servicies.RequestService;
 
 import io.swagger.v3.oas.annotations.Operation;

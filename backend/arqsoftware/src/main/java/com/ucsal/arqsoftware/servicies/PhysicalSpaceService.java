@@ -1,5 +1,6 @@
 package com.ucsal.arqsoftware.servicies;
 
+import com.ucsal.arqsoftware.dto.PhysicalSpaceSimpleDTO;
 import com.ucsal.arqsoftware.queryfilters.PhysicalSpaceQueryFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -12,7 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ucsal.arqsoftware.dto.PhysicalSpaceDTO;
 import com.ucsal.arqsoftware.dto.RequestDTO;
 import com.ucsal.arqsoftware.entities.PhysicalSpace;
-import com.ucsal.arqsoftware.entities.PhysicalSpaceType;
+import com.ucsal.arqsoftware.entities.enums.PhysicalSpaceType;
 import com.ucsal.arqsoftware.entities.Request;
 import com.ucsal.arqsoftware.repositories.PhysicalSpaceRepository;
 import com.ucsal.arqsoftware.servicies.exceptions.DatabaseException;
@@ -27,25 +28,31 @@ public class PhysicalSpaceService {
 	private PhysicalSpaceRepository repository;
 	
 	@Transactional(readOnly = true)
-	public PhysicalSpaceDTO findById(Long id) {
+	public PhysicalSpaceSimpleDTO findById(Long id) {
 		PhysicalSpace physicalSpace = repository.findById(id).orElseThrow(
 				() -> new ResourceNotFoundException("Recurso não encontrado"));
-		return new PhysicalSpaceDTO(physicalSpace);
+		return new PhysicalSpaceSimpleDTO(physicalSpace);
 	}
 	
 	@Transactional(readOnly = true)
-	public Page<PhysicalSpaceDTO> findAll(PhysicalSpaceQueryFilter filter, Pageable pageable) {
+	public Page<PhysicalSpaceSimpleDTO> findAll(PhysicalSpaceQueryFilter filter, Pageable pageable) {
 		Page<PhysicalSpace> result = repository.findAll(filter.toSpecification(),pageable);
-		return result.map(x -> new PhysicalSpaceDTO(x));
+		return result.map(x -> new PhysicalSpaceSimpleDTO(x));
 	}
+
+    @Transactional(readOnly = true)
+    public Page<PhysicalSpaceDTO> findByAllAndRequests(PhysicalSpaceQueryFilter filter, Pageable pageable) {
+        Page<PhysicalSpace> result = repository.findAll(filter.toSpecification(),pageable);
+        return result.map(x -> new PhysicalSpaceDTO(x));
+    }
 	
 	@Transactional
-	public PhysicalSpaceDTO insert(PhysicalSpaceDTO dto) {
+	public PhysicalSpaceSimpleDTO insert(PhysicalSpaceSimpleDTO dto) {
 		PhysicalSpace entity = new PhysicalSpace();
-		copyDtoToEntity(dto, entity);
+		copyDtoToEntityForInsert(dto, entity);
 		entity.setAvailability(true);
 		entity = repository.save(entity);
-		return new PhysicalSpaceDTO(entity);
+		return new PhysicalSpaceSimpleDTO(entity);
 	}
 	
 	@Transactional
@@ -73,25 +80,35 @@ public class PhysicalSpaceService {
 	   	}
 	}
 
-	private void copyDtoToEntity(PhysicalSpaceDTO dto, PhysicalSpace entity) {
+	private void copyDtoToEntityForInsert(PhysicalSpaceSimpleDTO dto, PhysicalSpace entity) {
 		entity.setName(dto.getName());
 		entity.setLocation(dto.getLocation());
 		entity.setCapacity(dto.getCapacity());
 		entity.setType(dto.getType());
 		entity.setResources(dto.getResources());
 		entity.setAvailability(dto.getAvailability());
-		for (RequestDTO reqDto : dto.getRequests()) {
-			boolean exists = entity.getRequests().stream()
-					.anyMatch(req -> req.getId().equals(reqDto.getId()));
-			if (!exists) {
-				Request req = new Request();
-				req.setId(reqDto.getId());
-				entity.getRequests().add(req);
-			}
-		}
 	}
 
-	@Transactional(readOnly = true)
+    private void copyDtoToEntity(PhysicalSpaceDTO dto, PhysicalSpace entity) {
+        entity.setName(dto.getName());
+        entity.setLocation(dto.getLocation());
+        entity.setCapacity(dto.getCapacity());
+        entity.setType(dto.getType());
+        entity.setResources(dto.getResources());
+        entity.setAvailability(dto.getAvailability());
+        for (RequestDTO reqDto : dto.getRequests()) {
+            boolean exists = entity.getRequests().stream()
+                    .anyMatch(req -> req.getId().equals(reqDto.getId()));
+            if (!exists) {
+                Request req = new Request();
+                req.setId(reqDto.getId());
+                entity.getRequests().add(req);
+            }
+        }
+    }
+
+
+    @Transactional(readOnly = true)
 	public Page<PhysicalSpaceDTO> getByType(PhysicalSpaceType type, Pageable pageable) {
 		Page<PhysicalSpace> result = repository.findAllByType(type, pageable);
 	    return result.map(PhysicalSpaceDTO::new);

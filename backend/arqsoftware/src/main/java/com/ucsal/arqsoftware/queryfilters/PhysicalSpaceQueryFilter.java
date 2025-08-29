@@ -1,7 +1,7 @@
 package com.ucsal.arqsoftware.queryfilters;
 
 import com.ucsal.arqsoftware.entities.PhysicalSpace;
-import com.ucsal.arqsoftware.entities.PhysicalSpaceType;
+import com.ucsal.arqsoftware.entities.enums.PhysicalSpaceType;
 import com.ucsal.arqsoftware.specifications.PhysicalSpaceSpec;
 import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;

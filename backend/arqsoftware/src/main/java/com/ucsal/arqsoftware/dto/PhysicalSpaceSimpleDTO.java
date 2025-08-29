@@ -1,12 +1,8 @@
 package com.ucsal.arqsoftware.dto;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.ucsal.arqsoftware.entities.PhysicalSpace;
-import com.ucsal.arqsoftware.entities.enums.PhysicalSpaceType;
 import com.ucsal.arqsoftware.entities.Request;
-
+import com.ucsal.arqsoftware.entities.enums.PhysicalSpaceType;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -16,9 +12,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @NoArgsConstructor
 @Getter
-public class PhysicalSpaceDTO {
+public class PhysicalSpaceSimpleDTO {
 
     @Schema(description = "Unique identifier of the physical space", example = "1", accessMode = Schema.AccessMode.READ_ONLY)
     private Long id;
@@ -49,10 +48,7 @@ public class PhysicalSpaceDTO {
     @Setter
 	private Boolean availability;
 
-    @Schema(description = "List of requests associated with the physical space", accessMode = Schema.AccessMode.READ_ONLY)
-    private List<RequestDTO> requests = new ArrayList<>();
-	
-	public PhysicalSpaceDTO(PhysicalSpace entity) {
+	public PhysicalSpaceSimpleDTO(PhysicalSpace entity) {
 		id = entity.getId();
 		name = entity.getName();
 		location = entity.getLocation();
@@ -60,9 +56,5 @@ public class PhysicalSpaceDTO {
 		capacity = entity.getCapacity();
 		resources = entity.getResources();
 		availability = entity.getAvailability();
-		for(Request req : entity.getRequests()) {
-			RequestDTO reqDTO = new RequestDTO(req);
-			requests.add(reqDTO);
-		}	
 	}
 }

@@ -2,6 +2,7 @@ package com.ucsal.arqsoftware.controllers;
 
 import java.net.URI;
 
+import com.ucsal.arqsoftware.dto.PhysicalSpaceSimpleDTO;
 import com.ucsal.arqsoftware.queryfilters.PhysicalSpaceQueryFilter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -17,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.ucsal.arqsoftware.dto.PhysicalSpaceDTO;
-import com.ucsal.arqsoftware.entities.PhysicalSpaceType;
+import com.ucsal.arqsoftware.entities.enums.PhysicalSpaceType;
 import com.ucsal.arqsoftware.servicies.PhysicalSpaceService;
 
 import jakarta.validation.Valid;
@@ -41,8 +42,8 @@ public class PhysicalSpaceController {
     )
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_MANAGER')")
     @GetMapping("/{id}")
-    public ResponseEntity<PhysicalSpaceDTO> findById(@PathVariable Long id) {
-        PhysicalSpaceDTO dto = service.findById(id);
+    public ResponseEntity<PhysicalSpaceSimpleDTO> findById(@PathVariable Long id) {
+        PhysicalSpaceSimpleDTO dto = service.findById(id);
         return ResponseEntity.ok(dto);
     }
 
@@ -55,8 +56,22 @@ public class PhysicalSpaceController {
     )
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_MANAGER')")
     @GetMapping
-    public ResponseEntity<Page<PhysicalSpaceDTO>> findByAll(@ParameterObject PhysicalSpaceQueryFilter filter, Pageable pageable) {
-        Page<PhysicalSpaceDTO> dto = service.findAll(filter, pageable);
+    public ResponseEntity<Page<PhysicalSpaceSimpleDTO>> findByAll(@ParameterObject PhysicalSpaceQueryFilter filter, Pageable pageable) {
+        Page<PhysicalSpaceSimpleDTO> dto = service.findAll(filter, pageable);
+        return ResponseEntity.ok(dto);
+    }
+
+    @Operation(
+            summary = "List all Physical Spaces and requests",
+            description = "Retrieve all physical spaces with optional filters and pagination",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "OK")
+            }
+    )
+    @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_MANAGER')")
+    @GetMapping("/{id}/requests")
+    public ResponseEntity<Page<PhysicalSpaceDTO>> findByAllAndRequests(@ParameterObject PhysicalSpaceQueryFilter filter, Pageable pageable) {
+        Page<PhysicalSpaceDTO> dto = service.findByAllAndRequests(filter, pageable);
         return ResponseEntity.ok(dto);
     }
 
@@ -73,7 +88,7 @@ public class PhysicalSpaceController {
     )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping
-    public ResponseEntity<PhysicalSpaceDTO> insert(@Valid @RequestBody PhysicalSpaceDTO dto) {
+    public ResponseEntity<PhysicalSpaceSimpleDTO> insert(@Valid @RequestBody PhysicalSpaceSimpleDTO dto) {
         dto = service.insert(dto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
                 .path("/{id}")

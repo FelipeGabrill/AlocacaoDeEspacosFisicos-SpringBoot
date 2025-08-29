@@ -3,13 +3,8 @@ package com.ucsal.arqsoftware.entities;
 import java.util.HashSet;
 import java.util.Set;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.ucsal.arqsoftware.entities.enums.PhysicalSpaceType;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -28,7 +23,7 @@ public class PhysicalSpace {
 	private Long id;
 	
 	@Setter
-	private String name;
+    private String name;
 	
 	@Setter
 	private String location;

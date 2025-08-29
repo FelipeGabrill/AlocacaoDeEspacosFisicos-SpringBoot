@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 import com.ucsal.arqsoftware.entities.PhysicalSpace;
-import com.ucsal.arqsoftware.entities.PhysicalSpaceType;
+import com.ucsal.arqsoftware.entities.enums.PhysicalSpaceType;
 
 @Repository
 public interface PhysicalSpaceRepository extends JpaRepository<PhysicalSpace, Long> , JpaSpecificationExecutor<PhysicalSpace> {

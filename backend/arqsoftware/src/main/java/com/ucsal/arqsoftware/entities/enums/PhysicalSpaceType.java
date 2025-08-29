@@ -1,4 +1,4 @@
-package com.ucsal.arqsoftware.entities;
+package com.ucsal.arqsoftware.entities.enums;
 
 public enum PhysicalSpaceType {
 
