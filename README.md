@@ -136,7 +136,7 @@ Permitir que diferentes perfis de usuários acessem a aplicação com permissõe
 
 ## 1. Clone o repositório:
 ```bash
-git clone https://github.com/FelipeGabrill/Arquitetura-de-Software-SpringBoot
+git clone https://github.com/FelipeGabrill/AlocacaoDeEspacosFisicos-SpringBoot
 ```
 
 ## 2. Acesse a pasta do projeto:
