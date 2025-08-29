@@ -11,8 +11,8 @@
 	<groupId>com.ucsal</groupId>
 	<artifactId>arqsoftware</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>arqsoftware</name>
-	<description>GerenciaDeSalas</description>
+	<name>SistemaDeAlocacaoDeEspacosFisicos</name>
+    <description>Aplicação para gerenciamento e alocação de espaços físicos em instituições acadêmicas</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>
