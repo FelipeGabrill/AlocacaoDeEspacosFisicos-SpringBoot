@@ -9,7 +9,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -38,7 +37,7 @@ public class AuditController {
     )
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/logs")
-    public ResponseEntity<Page<AuditDTO>> getAllAuditLogs(@ParameterObject AuditQueryFilter filter, Pageable pageable) {
+    public ResponseEntity<Page<AuditDTO>> getAllAuditLogs(AuditQueryFilter filter, Pageable pageable) {
         Page<AuditDTO> auditLogs = auditService.getAllAuditLogs(filter, pageable);
         return ResponseEntity.ok(auditLogs);
     }

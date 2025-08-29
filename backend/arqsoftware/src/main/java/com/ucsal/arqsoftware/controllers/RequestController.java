@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
-import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -56,7 +55,7 @@ public class RequestController {
     )
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_TEACHER', 'ROLE_MANAGER')")
     @GetMapping
-    public ResponseEntity<Page<RequestDTO>> findAll(@ParameterObject RequestQueryFilter filter, Pageable pageable) {
+    public ResponseEntity<Page<RequestDTO>> findAll(RequestQueryFilter filter, Pageable pageable) {
         Page<RequestDTO> dto = service.findAll(filter, pageable);
         return ResponseEntity.ok(dto);
     }

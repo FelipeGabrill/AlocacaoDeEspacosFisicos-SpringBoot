@@ -100,7 +100,7 @@ public class ApprovalHistoryController {
     )
     @PreAuthorize("hasAnyRole('ROLE_ADMIN', 'ROLE_MANAGER')")
     @PutMapping("/{id}")
-    public ResponseEntity<ApprovalHistoryDTO> update(@PathVariable Long id, @Valid @RequestBody ApprovalHistoryDTO dto) {
+    public ResponseEntity<ApprovalHistoryDTO> update(@PathVariable Long id, @Valid @RequestBody ApprovalHistoryDTO dto) throws SchedulerException {
         dto = service.update(id, dto);
         return ResponseEntity.ok(dto);
     }

@@ -20,4 +20,5 @@ public interface PhysicalSpaceRepository extends JpaRepository<PhysicalSpace, Lo
 
     Page<PhysicalSpace> findAllByAvailability(Boolean availability, Pageable pageable);
 
+    boolean existsByName(String name);
 }

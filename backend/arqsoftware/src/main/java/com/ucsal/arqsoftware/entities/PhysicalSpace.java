@@ -11,7 +11,9 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "tb_physical_spaces")
+@Table(name = "tb_physical_spaces", uniqueConstraints = {
+        @UniqueConstraint(columnNames = "name")
+})
 @Getter
 @AllArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
@@ -23,6 +25,7 @@ public class PhysicalSpace {
 	private Long id;
 	
 	@Setter
+    @Column(nullable = false, unique = true)
     private String name;
 	
 	@Setter

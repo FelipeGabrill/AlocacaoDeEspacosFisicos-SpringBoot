@@ -1,7 +1,5 @@
 package com.ucsal.arqsoftware.servicies;
 
-import com.ucsal.arqsoftware.job.MarkAvailableJob;
-import com.ucsal.arqsoftware.job.MarkUnavailableJob;
 import org.quartz.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -41,7 +39,7 @@ public class ApprovalHistoryService {
     private RequestRepository requestRepository;
 
     @Autowired
-    private Scheduler scheduler;
+    private SchedulerService schedulerService;
 
     @Transactional(readOnly = true)
     public ApprovalHistoryDTO findById(Long id) {
@@ -64,44 +62,8 @@ public class ApprovalHistoryService {
         entity = repository.save(entity);
 
         if (entity.isDecision()) {
-            List<Request> pendingRequests = requestRepository
-                    .findByPhysicalSpaceAndStatusAndDateTimeStartLessThanEqualAndDateTimeEndGreaterThanEqual(
-                            entity.getRequest().getPhysicalSpace(),
-                            RequestStatus.PENDING,
-                            entity.getRequest().getDateTimeEnd(),
-                            entity.getRequest().getDateTimeStart()
-                    );
-
-
-            for (Request r : pendingRequests) {
-                if (!r.getId().equals(entity.getRequest().getId())) {
-                    r.setStatus(RequestStatus.REJECTED);
-                }
-            }
-
-            requestRepository.saveAll(pendingRequests);
-
-            JobDetail jobInicio = JobBuilder.newJob(MarkUnavailableJob.class)
-                    .withIdentity("markUnavailableJob_" + entity.getRequest().getId())
-                    .usingJobData("approvalHistoryId", entity.getRequest().getId())
-                    .build();
-
-            Trigger triggerInicio = TriggerBuilder.newTrigger()
-                    .startAt(Date.from(entity.getRequest().getDateTimeStart().toInstant()))
-                    .build();
-
-            scheduler.scheduleJob(jobInicio, triggerInicio);
-
-            JobDetail jobFim = JobBuilder.newJob(MarkAvailableJob.class)
-                    .withIdentity("markAvailableJob_" + entity.getId())
-                    .usingJobData("approvalHistoryId", entity.getId())
-                    .build();
-
-            Trigger triggerFim = TriggerBuilder.newTrigger()
-                    .startAt(Date.from(entity.getRequest().getDateTimeEnd().toInstant()))
-                    .build();
-
-            scheduler.scheduleJob(jobFim, triggerFim);
+            rejectConflictingRequests(entity.getRequest());
+            schedulerService.scheduleApprovalHistoryJobs(entity);
 
         }
 
@@ -109,11 +71,22 @@ public class ApprovalHistoryService {
     }
 
     @Transactional
-    public ApprovalHistoryDTO update(Long id, ApprovalHistoryDTO dto) {
+    public ApprovalHistoryDTO update(Long id, ApprovalHistoryDTO dto) throws SchedulerException {
+        Request request = validateAndGetRequest(dto.getRequestId());
+        checkForConflicts(request);
+
         try {
             ApprovalHistory entity = repository.getReferenceById(id);
+            boolean decisionAntes = entity.isDecision();
+            boolean decisionDepois = dto.isDecision();
+
             copyDtoToEntity(dto, entity);
             entity = repository.save(entity);
+
+            if (!decisionAntes && decisionDepois) {
+                rejectConflictingRequests(entity.getRequest());
+                schedulerService.scheduleApprovalHistoryJobs(entity);
+            }
             return new ApprovalHistoryDTO(entity);
         } catch (EntityNotFoundException e) {
             throw new ResourceNotFoundException("Histórico de aprovação não encontrado");
@@ -147,4 +120,40 @@ public class ApprovalHistoryService {
         requestRepository.save(request);
        
     }
+
+    public Request validateAndGetRequest(Long requestId) {
+        return requestRepository.findById(requestId)
+                .orElseThrow(() -> new ResourceNotFoundException("Requisição não encontrada"));
+    }
+
+    public void checkForConflicts(Request request) {
+        boolean conflito = requestRepository.existsByPhysicalSpaceAndStatusAndDateTimeStartLessThanEqualAndDateTimeEndGreaterThanEqual(
+                request.getPhysicalSpace(),
+                RequestStatus.APPROVED,
+                request.getDateTimeEnd(),
+                request.getDateTimeStart()
+        );
+
+        if (conflito) {
+            throw new DatabaseException("Já existe uma requisição aprovada neste espaço físico nesse horário.");
+        }
+    }
+
+    public void rejectConflictingRequests(Request entity) {
+        List<Request> pendingRequests = requestRepository
+                .findByPhysicalSpaceAndStatusAndDateTimeStartLessThanEqualAndDateTimeEndGreaterThanEqual(
+                        entity.getPhysicalSpace(),
+                        RequestStatus.PENDING,
+                        entity.getDateTimeEnd(),
+                        entity.getDateTimeStart()
+                );
+
+        for (Request r : pendingRequests) {
+            if (!r.getId().equals(entity.getId())) {
+                r.setStatus(RequestStatus.REJECTED);
+                requestRepository.save(r);
+            }
+        }
+    }
+
 }

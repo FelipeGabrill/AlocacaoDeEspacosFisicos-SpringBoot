@@ -26,6 +26,8 @@ public interface RequestRepository extends JpaRepository<Request, Long>, JpaSpec
 
     Page<Request> findByTitleIgnoreCaseContaining(String title, Pageable pageable);
 
+    boolean existsByUserIdAndStatus(Long userId, RequestStatus status);
+
     boolean existsByPhysicalSpaceAndStatusAndDateTimeStartLessThanEqualAndDateTimeEndGreaterThanEqual(
             PhysicalSpace physicalSpace,
             RequestStatus status,

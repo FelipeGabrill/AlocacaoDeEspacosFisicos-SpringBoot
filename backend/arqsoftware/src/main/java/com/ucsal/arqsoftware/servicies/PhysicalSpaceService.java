@@ -51,16 +51,20 @@ public class PhysicalSpaceService {
 		PhysicalSpace entity = new PhysicalSpace();
 		copyDtoToEntityForInsert(dto, entity);
 		entity.setAvailability(true);
-		entity = repository.save(entity);
+
+        validateName(entity.getName());
+
+        entity = repository.save(entity);
 		return new PhysicalSpaceSimpleDTO(entity);
 	}
 	
 	@Transactional
 	public PhysicalSpaceDTO update(Long id, PhysicalSpaceDTO dto) {
 		try {
+            validateName(dto.getName());
 			PhysicalSpace entity = repository.getReferenceById(id);
 			copyDtoToEntity(dto, entity);
-			entity = repository.save(entity);
+            entity = repository.save(entity);
 			return new PhysicalSpaceDTO(entity);
 		} catch (EntityNotFoundException e) {
 			throw new ResourceNotFoundException("Recurso não encontrado");
@@ -130,5 +134,11 @@ public class PhysicalSpaceService {
 	public Page<PhysicalSpaceDTO> getByAvailability(Boolean availability, Pageable pageable) {
 	    Page<PhysicalSpace> result = repository.findAllByAvailability(availability, pageable);
 	    return result.map(PhysicalSpaceDTO::new);
+    }
+
+    private void validateName(String name) {
+        if (repository.existsByName(name)) {
+            throw new DatabaseException("Já existe uma sala com o nome '" + name + "' cadastrada.");
+        }
     }
 }
