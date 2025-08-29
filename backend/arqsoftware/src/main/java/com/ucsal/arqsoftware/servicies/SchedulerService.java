@@ -36,8 +36,8 @@ public class SchedulerService {
 
     private void scheduleEndJob(ApprovalHistory entity) throws SchedulerException {
         JobDetail job = JobBuilder.newJob(MarkAvailableJob.class)
-                .withIdentity("markAvailableJob_" + entity.getId())
-                .usingJobData("approvalHistoryId", entity.getId())
+                .withIdentity("markAvailableJob_" + entity.getRequest().getId())
+                .usingJobData("approvalHistoryId", entity.getRequest().getId())
                 .build();
 
         Trigger trigger = TriggerBuilder.newTrigger()

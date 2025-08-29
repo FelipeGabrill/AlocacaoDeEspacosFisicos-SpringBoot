@@ -25,9 +25,7 @@ public class MarkUnavailableJob implements Job {
     public void execute(JobExecutionContext context) {
         Long approvalHistoryId = context.getJobDetail().getJobDataMap().getLong("approvalHistoryId");
 
-        //PhysicalSpace physicalSpace = requestRepository.findById(requestId).get().getPhysicalSpace();
         PhysicalSpace physicalSpace = approvalHistoryRepository.findById(approvalHistoryId).get().getRequest().getPhysicalSpace();
-
 
         physicalSpace.setAvailability(false);
         physicalSpaceRepository.save(physicalSpace);
