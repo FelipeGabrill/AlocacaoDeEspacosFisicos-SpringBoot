@@ -4,7 +4,7 @@
 
 - Java 17
 - Spring Boot 3.2.5
-- Loombok
+- Lombok
 - Spring Security
 - Spring OAuth2 Authorization
 - JWT
